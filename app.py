@@ -24,20 +24,75 @@ handler = SlackRequestHandler(app)
 #Provide a static access point for house jobs and points
 sheets_data = sheets_helpers.SheetsData.SheetsData()
 
-@app.message("signoff")
-def message_hello(message, say):
+@app.message("tomertron start")
+def tomertron_start_command(say):
     """
-    Listen for messages containing the string "signoff"
+    Listen for the start command "tomertron start"
     """
-    sheets_data.load_jobs_and_points()
-    say(sheets_data.job_data)
-    say(sheets_data.point_data)
+    blocks = [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "What would you like to do?"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Signoff a House Job"
+					},
+					"action_id": "signoff"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Reassign a House Job"
+					},
+					"action_id": "reassign"
+				}
+			]
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Unsignoff a House Job"
+					},
+					"action_id": "unsignoff"
+				}
+			]
+		}
+	]
+    say(blocks=blocks)
 
 @app.event("message")
 def handle_message():
     """
-    Ignore all messages not containing the above strings
+    Ignore all messages besides the start command
     """
+
+@app.action("signoff")
+def signoff_flow(ack, say):
+    """
+    Begin the signoff process when the "signoff" button is clicked
+    """
+    ack()
+    say("Received a signoff request")
+
 
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
