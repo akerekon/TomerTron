@@ -1,5 +1,6 @@
 """Module allowing access to os environment variables."""
 import os
+import sheets_helpers.SheetsData
 
 from dotenv import load_dotenv
 from flask import Flask, request
@@ -20,12 +21,17 @@ app = App(
 flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
 
+#Provide a static access point for house jobs and points
+sheets_data = sheets_helpers.SheetsData.SheetsData()
+
 @app.message("signoff")
 def message_hello(message, say):
     """
     Listen for messages containing the string "signoff"
     """
-    say(f"Hey there <@{message['user']}>!")
+    sheets_data.load_jobs_and_points()
+    say(sheets_data.job_data)
+    say(sheets_data.point_data)
 
 @app.event("message")
 def handle_message():
@@ -43,4 +49,4 @@ def slack_events():
 if __name__ == "__main__":
     #In testing, run with Flask using "flask run -p 3000"
     #In production, serve our application using waitress using "python app.py"
-    serve(flask_app, host="51.81.33.212", port=3000)
+    serve(flask_app, host=os.getenv("SERVER_IP"), port=os.getenv("SERVER_PORT"))
