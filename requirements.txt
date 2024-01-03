@@ -1,2 +1,4 @@
-slack_bolt
 dotenv
+flask
+slack_bolt
+waitress
