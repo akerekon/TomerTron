@@ -77,7 +77,7 @@ def tomertron_start_command(say):
 			]
 		}
 	]
-    say(blocks=blocks)
+    say(blocks=blocks, text="What would you like to do?")
 
 @app.event("message")
 def handle_message():
@@ -86,12 +86,28 @@ def handle_message():
     """
 
 @app.action("signoff")
-def signoff_flow(ack, say):
+def signoff_flow(body, ack, say):
     """
     Begin the signoff process when the "signoff" button is clicked
     """
     ack()
-    say("Received a signoff request")
+    say(f"<@{body['user']['id']}> Sent a signoff request")
+
+@app.action("reassign")
+def reassign_flow(body, ack, say):
+    """
+    Begin the reassign process when the "reassign" button is clicked
+    """
+    ack()
+    say(f"<@{body['user']['id']}> Sent a reassign request")
+
+@app.action("unsignoff")
+def unsignoff_flow(body, ack, say):
+    """
+    Begin the unsignoff process when the "unsignoff" button is clicked
+    """
+    ack()
+    say(f"<@{body['user']['id']}> Sent an unsignoff request")
 
 
 @flask_app.route("/slack/events", methods=["POST"])
