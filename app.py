@@ -43,4 +43,4 @@ def slack_events():
 if __name__ == "__main__":
     #In testing, run with Flask using "flask run -p 3000"
     #In production, serve our application using waitress using "python app.py"
-    serve(flask_app, host="127.0.0.1", port=3000)
+    serve(flask_app, host="51.81.33.212", port=3000)
