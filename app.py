@@ -60,6 +60,13 @@ def signoff_name_submitted(ack, body, client, view):
 def signoff_confirm(ack, body, client, view, say):
     command_flow.signoff_confirm(ack=ack, body=body, client=client, view=view, say=say)
 
+@app.action("job-option")
+def job_selected(ack):
+    """
+    Acknowledge, but do not take any action when a job is selected
+    """
+    ack()
+
 @app.action("reassign")
 def reassign_flow(ack, body, client):
     """
@@ -74,16 +81,6 @@ def unsignoff_flow(ack, body, client):
     Begin the unsignoff process when the "unsignoff" button is clicked
     """
     command_flow.unsignoff_command(ack=ack, body=body, client=client)
-
-@app.error
-def other_requests(ack, error):
-    """
-    Ignore all requests that do not apply to TomerTron's logic
-    """
-    if isinstance(error, BoltUnhandledRequestError):
-        ack()
-    else:
-        return BoltResponse(status=500, body="TomerTron had a serverside error -- let an admin know")
 
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
