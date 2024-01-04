@@ -7,7 +7,7 @@ from slack_bolt import App
 from slack_bolt.adapter.flask import SlackRequestHandler
 from waitress import serve
 
-import TomerTron.sheets_helpers.command_flow as cf
+import sheets_helpers.command_flow as cf
 
 #Load in environment variables using dotenv, from a .env file
 #These secrets can be accessed by the current administrator of TomerTron via the Slack interface
