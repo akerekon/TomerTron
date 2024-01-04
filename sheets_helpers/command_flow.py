@@ -2,7 +2,7 @@
 command_flow is a module to house CommandFlow below
 """
 
-from TomerTron.sheets_helpers.sheets_data import SheetsData
+from sheets_helpers.sheets_data import SheetsData # pylint: disable=import-error disable=no-name-in-module
 
 class CommandFlow:
     """
