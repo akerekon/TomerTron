@@ -86,12 +86,39 @@ def handle_message():
     """
 
 @app.action("signoff")
-def signoff_flow(body, ack, say):
+def signoff_flow(body, ack, client):
     """
     Begin the signoff process when the "signoff" button is clicked
     """
     ack()
-    say(f"<@{body['user']['id']}> Sent a signoff request")
+    client.views_open(trigger_id=body["trigger_id"], view={
+        "type": "modal",
+        "title": {
+            "type": "plain_text",
+            "text": "Signoff a House Job"
+        },
+        "submit": {
+            "type": "plain_text",
+            "text": "Confirm Name"
+        },
+        "close": {
+            "type": "plain_text",
+            "text": "Cancel"
+        },
+        "blocks": [
+            {
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "signoff-name"
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "Who are you signing off?",
+                }
+            }
+	    ]}
+    )
 
 @app.action("reassign")
 def reassign_flow(body, ack, say):
