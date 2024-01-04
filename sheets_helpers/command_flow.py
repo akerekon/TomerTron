@@ -74,6 +74,7 @@ class CommandFlow:
 		}
 	    ]
         result = say(channel=self.CHANNEL_ID, blocks=blocks, text="What would you like to do?")
+        print(result)
         self.last_bot_timestamp = result["ts"]
 
     def signoff_command(self, ack, body, client):
@@ -143,6 +144,7 @@ class CommandFlow:
             }
             ack(response_action="update", view=failure_view)
         else:
+            #TODO Refactor to use f string
             job_json_builder = ""
             for index, job in enumerate(jobs):
                 day = job[2]
