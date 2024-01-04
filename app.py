@@ -10,7 +10,7 @@ from slack_bolt import App
 from slack_bolt.adapter.flask import SlackRequestHandler
 from waitress import serve
 
-from sheets_helpers.command_flow import CommandFlow
+from sheets_helpers.command_flow import CommandFlow # pylint: disable=import-error disable=no-name-in-module
 
 #Load in environment variables using dotenv, from a .env file
 #These secrets can be accessed by the current administrator of TomerTron via the Slack interface
@@ -35,6 +35,7 @@ def tomertron_start_command(say):
     """
     command_flow.start_command(say=say)
 
+
 @app.event("message")
 def handle_message():
     """
@@ -46,16 +47,19 @@ def signoff_flow(ack, body, client):
     """
     Begin the signoff process when the "signoff" button is clicked
     """
-    ack()
-    command_flow.signoff_command(body=body, client=client)
+    command_flow.signoff_command(ack=ack, body=body, client=client)
+
+@app.view("signoff-name-view")
+def signoff_name_submitted(ack, body, client, view):
+    command_flow.signoff_name_submitted(ack=ack, body=body, client=client, view=view)
+
 
 @app.action("reassign")
 def reassign_flow(ack, body, client):
     """
     Begin the reassign process when the "reassign" button is clicked
     """
-    ack()
-    command_flow.reassign_command(body=body, client=client)
+    command_flow.reassign_command(ack=ack, body=body, client=client)
     
 
 @app.action("unsignoff")
@@ -63,8 +67,7 @@ def unsignoff_flow(ack, body, client):
     """
     Begin the unsignoff process when the "unsignoff" button is clicked
     """
-    ack()
-    command_flow.unsignoff_command(body=body, client=client)
+    command_flow.unsignoff_command(ack=ack, body=body, client=client)
 
 
 @flask_app.route("/slack/events", methods=["POST"])

@@ -69,12 +69,14 @@ class CommandFlow:
 	    ]
         say(blocks=blocks, text="What would you like to do?")
 
-    def signoff_command(self, body, client):
+    def signoff_command(self, ack, body, client):
         """
         Provide a flow to signoff a housejob, opening new views as needed
         """
+        ack()
         client.views_open(trigger_id=body["trigger_id"], view={
         "type": "modal",
+        "callback-id": "signoff-name-view",
         "title": {
             "type": "plain_text",
             "text": "Signoff a House Job"
@@ -100,12 +102,94 @@ class CommandFlow:
                 }
             }
 	    ]}
-    )       
-    def reassign_command(self, body, client):
+    )
+    def signoff_name_submitted(self, ack, body, client, view):
+        print(str(view))
+        print(str(body))
+        print(str(client))
+        success_view = {
+            "type": "modal",
+            "title": {
+                "type": "plain_text",
+                "text": "Which job is this?"
+            },
+            "submit": {
+                "type": "plain_text",
+                "text": "Confirm Signoff",
+            },
+            "close": {
+                "type": "plain_text",
+                "text": "Cancel",
+            },
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Signing off <person>"
+                    }
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "radio_buttons",
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Tuesday at 8 -- 1st Floor Bathroom"
+                                    },
+                                    "value": "job-0"
+                                },
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Thursday at Mack's -- 1st Floor Bathroom"
+                                    },
+                                    "value": "job-1"
+                                }
+                            ],
+                            "action_id": "job-option"
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "If none of the above jobs apply, verify if they've swapped with someone. If so, reassign this job first."
+                    }
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "checkboxes",
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": "Is this job late?"
+                                    },
+                                    "value": "late"
+                                }
+                            ],
+                            "action_id": "job-late"
+                        }
+                    ]
+                }
+            ]
+        }
+        ack(response_action="update", view=success_view)
+
+    def reassign_command(self, ack, body, client):
         """
         Provide a flow to reassign a housejob, opening new views as needed
         """
-    def unsignoff_command(self, body, client):
+        ack()
+    def unsignoff_command(self, ack, body, client):
         """
         Provide a flow to unsignoff a housejob, opening new views as needed
         """
+        ack()
