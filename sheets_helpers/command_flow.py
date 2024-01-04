@@ -2,7 +2,7 @@
 command_flow is a module to house CommandFlow below
 """
 
-from sheets_data import SheetsData
+from TomerTron.sheets_helpers.sheets_data import SheetsData
 
 class CommandFlow:
     """
