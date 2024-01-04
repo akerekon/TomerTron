@@ -13,6 +13,9 @@ class CommandFlow:
     #Provide a static class to access house job and point data
     sheets_data = SheetsData()
 
+    #Specify which channel TomerTron should send messages to
+    CHANNEL_ID = "C06CPSUJFUG"
+
     def start_command(self, say):
         """
         Provide an interface for a user to select to...
@@ -212,14 +215,12 @@ class CommandFlow:
             ack(response_action="update", view=json.loads(success_view))
     def signoff_confirm(self, ack, body, client, view, say):
         ack()
-        print(body)
-        print(client)
-        print(view)
 
         signedoff_name = " ".join(body["view"]["blocks"][0]["text"]["text"].split(" ")[2:])
         job_block_id = body["view"]["blocks"][1]["block_id"]
         job = view["state"]["values"][job_block_id]["job-option"]["selected_option"]
-        say(channel=body["user"]["id"], text="<@"+ body["user"]["username"]+"> signed off " + signedoff_name + " for " + str(job))
+
+        say(channel=self.CHANNEL_ID, text="<@"+ body["user"]["username"]+"> signed off " + signedoff_name + " for " + job['text']['text'])
 
     def reassign_command(self, ack, body, client):
         """
