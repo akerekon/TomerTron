@@ -19,8 +19,8 @@ class SheetsData:
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
     SPREADSHEET_ID = "1EPY4FXw_K87VMz0MpMEFh5JWgdLMilBnudYXqhMr2-g"
-    JOB_RANGE = "AllJobs"
-    POINT_RANGE = "PointRange"
+    JOB_RANGE = "House_Jobs!A2:G256"
+    POINT_RANGE = "Week_Scores!A1:F256"
 
     job_data = []
     point_data = []
