@@ -42,6 +42,11 @@ def handle_message():
     Ignore all messages besides the start command
     """
 
+@app.action("job-option")
+def handle_job_click(ack):
+    """Acknowledge, but ignore when a job is clicked"""
+    ack()
+
 @app.action("signoff")
 def signoff_flow(ack, body, client):
     """
