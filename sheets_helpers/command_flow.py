@@ -16,6 +16,8 @@ class CommandFlow:
     #Specify which channel TomerTron should send messages to
     CHANNEL_ID = "C06CPSUJFUG"
 
+    last_bot_timestamp = ""
+
     def start_command(self, say):
         """
         Provide an interface for a user to select to...
@@ -71,7 +73,8 @@ class CommandFlow:
 			]
 		}
 	    ]
-        say(blocks=blocks, text="What would you like to do?")
+        result = say(blocks=blocks, text="What would you like to do?")
+        print(result)
 
     def signoff_command(self, ack, body, client):
         """

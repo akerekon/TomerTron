@@ -38,7 +38,6 @@ def tomertron_start_command(say):
     """
     command_flow.start_command(say=say)
 
-
 @app.event("message")
 def handle_message():
     """
