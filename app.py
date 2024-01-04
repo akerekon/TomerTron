@@ -53,6 +53,9 @@ def signoff_flow(ack, body, client):
 def signoff_name_submitted(ack, body, client, view):
     command_flow.signoff_name_submitted(ack=ack, body=body, client=client, view=view)
 
+@app.view("signoff-confirm")
+def signoff_confirm(ack, body, client, view, say):
+    command_flow.signoff_confirm(ack=ack, body=body, client=client, view=view, say=say)
 
 @app.action("reassign")
 def reassign_flow(ack, body, client):

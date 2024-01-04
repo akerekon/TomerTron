@@ -149,6 +149,7 @@ class CommandFlow:
 
             success_view = """{
                 "type": "modal",
+                "callback_id": "signoff-confirm",
                 "title": {
                     "type": "plain_text",
                     "text": "Which job is this?"
@@ -209,6 +210,12 @@ class CommandFlow:
                 ]
             }"""
             ack(response_action="update", view=json.loads(success_view))
+    def signoff_confirm(self, ack, body, client, view, say):
+        ack()
+        print(body)
+        print(client)
+        print(view)
+        say("Signed off ")
 
     def reassign_command(self, ack, body, client):
         """
