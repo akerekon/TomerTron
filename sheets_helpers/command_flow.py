@@ -118,7 +118,7 @@ class CommandFlow:
             job_json_builder += """}, "value":"""
             job_json_builder += '"job-' + str(index) + '" },'
 
-        success_view = json.loads("""{
+        success_view = """{
             "type": "modal",
             "title": {
                 "type": "plain_text",
@@ -178,9 +178,9 @@ class CommandFlow:
                     ]
                 }
             ]
-        }""")
+        }"""
         print(success_view)
-        ack(response_action="update", view=json.dumps(success_view))
+        ack(response_action="update", view=success_view)
 
     def reassign_command(self, ack, body, client):
         """
