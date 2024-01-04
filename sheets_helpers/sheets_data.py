@@ -126,8 +126,9 @@ class SheetsData:
         self._load_jobs_and_points()
         jobs = self.get_jobs_by_name(signedoff_name)
         job = jobs[int(job_id)]
-        job[3] = signedoffby_name
+        job[4] = signedoffby_name
 
-        print(self.job_data)
+        self._save_jobs_and_points()
+        
         print(job)
 
