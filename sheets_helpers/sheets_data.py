@@ -121,4 +121,7 @@ class SheetsData:
                 if row[3] == name:
                     matching_jobs.append(row)
         return matching_jobs
+    
+    def signoff_job(name, job_id):
+        pass
 
