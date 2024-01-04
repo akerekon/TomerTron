@@ -71,8 +71,8 @@ class SheetsData:
         Save data for house jobs and points to the spreadsheet
         """
         sheet = self._get_spreadsheet()
-        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.JOB_RANGE, body=self.job_data).execute()
-        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE, body=self.point_data).execute()
+        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.JOB_RANGE, body=self.job_data, valueInputOption="RAW").execute()
+        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE, body=self.point_data, valueInputOption="RAW").execute()
     
     def match_closest_name(self, input_string):
         """
