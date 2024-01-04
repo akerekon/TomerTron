@@ -73,7 +73,7 @@ class CommandFlow:
 			]
 		}
 	    ]
-        result = say(blocks=blocks, text="What would you like to do?")
+        result = say(channel=self.CHANNEL_ID, blocks=blocks, text="What would you like to do?")
         self.last_bot_timestamp = result["ts"]
 
     def signoff_command(self, ack, body, client):
