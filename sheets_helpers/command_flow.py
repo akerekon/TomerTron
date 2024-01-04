@@ -74,7 +74,7 @@ class CommandFlow:
 		}
 	    ]
         result = say(blocks=blocks, text="What would you like to do?")
-        print(result)
+        last_bot_timestamp = result["ts"]
 
     def signoff_command(self, ack, body, client):
         """
@@ -224,6 +224,8 @@ class CommandFlow:
         job = view["state"]["values"][job_block_id]["job-option"]["selected_option"]
 
         say(channel=self.CHANNEL_ID, text="<@"+ body["user"]["username"]+"> signed off " + signedoff_name + " for " + job['text']['text'])
+        client.chat_delete(channel=self.CHANNEL_ID, ts=self.last_bot_timestamp)
+        self.start_command(say)
 
     def reassign_command(self, ack, body, client):
         """
