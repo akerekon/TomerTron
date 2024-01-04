@@ -7,7 +7,9 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, request
 from slack_bolt import App
+from slack_bolt import BoltResponse
 from slack_bolt.adapter.flask import SlackRequestHandler
+from slack_bolt.error import BoltUnhandledRequestError
 from waitress import serve
 
 from sheets_helpers.command_flow import CommandFlow # pylint: disable=import-error disable=no-name-in-module
@@ -17,7 +19,8 @@ from sheets_helpers.command_flow import CommandFlow # pylint: disable=import-err
 load_dotenv()
 app = App(
     token=os.getenv("SLACK_BOT_TOKEN"),
-    signing_secret=os.getenv("SLACK_SIGNING_SECRET")
+    signing_secret=os.getenv("SLACK_SIGNING_SECRET"),
+    raise_error_for_unhandled_request=True
 )
 
 #In production, TomerTron uses Flask (and waitress) as a webserver
@@ -72,11 +75,15 @@ def unsignoff_flow(ack, body, client):
     """
     command_flow.unsignoff_command(ack=ack, body=body, client=client)
 
-@app.action("")
-def handle_job_click(ack):
-    """Acknowledge, but ignore other actions"""
-    ack()
-
+@app.error
+def other_requests(error):
+    """
+    Ignore all requests that do not apply to TomerTron's logic
+    """
+    if isinstance(error, BoltUnhandledRequestError):
+        return BoltResponse(status=200, body="")
+    else:
+        return BoltResponse(status=500, body="TomerTron had a serverside error -- let an admin know")
 
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
