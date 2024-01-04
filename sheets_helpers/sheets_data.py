@@ -51,7 +51,7 @@ class SheetsData:
 
     def _load_jobs_and_points(self):
         """
-        Load in data for house jobs and points from the spreadsheet
+        Refresh data for house jobs and points from the spreadsheet
         """
         sheet = self._get_spreadsheet()
         self.job_data = (
@@ -75,35 +75,45 @@ class SheetsData:
         sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE, body=self.point_data).execute()
     
     def match_closest_name(self, input_string):
+        """
+        Find the closest name against the list of names in the points spreadsheet
+        
+        First, refresh jobs and points
+        If the input has a space, it is probably a full name, so compare against full names
+        If not, it is either a firstname, lastname, or nickname, so compare against the minimum distance of each
+        """
         self._load_jobs_and_points()
         points = self.point_data.get("values", [])
 
-        best_match_count = sys.maxsize
+        best_match_distance = sys.maxsize
         best_match = ""
 
         if " " in input_string:
             for row in points[1:]:
                 if len(row) > 0:
-                    if Levenshtein.distance(input_string, row[0]) < best_match_count:
-                        best_match_count = Levenshtein.distance(input_string, row[0])
+                    distance = Levenshtein.distance(input_string, row[0])
+                    if distance < best_match_distance:
+                        best_match_distance = distance
                         best_match = row[0]
         else:
             for row in points[1:]:
                 if len(row) > 0:
                     first_name = row[0].split(" ")[0]
                     last_name = row[0].split(" ")[1]
-                    if Levenshtein.distance(input_string, first_name) < Levenshtein.distance(input_string, last_name):
-                        if Levenshtein.distance(input_string, first_name) < best_match_count:
-                            best_match_count = Levenshtein.distance(input_string, first_name)
-                            best_match = row[0]
-                    else:
-                        if Levenshtein.distance(input_string, last_name) < best_match_count:
-                            best_match_count = Levenshtein.distance(input_string, last_name)
-                            best_match = row[0]
+
+                    first_name_distance = Levenshtein.distance(input_string, first_name)
+                    last_name_distance = Levenshtein.distance(input_string, last_name)
+
+                    if min(first_name_distance, last_name_distance) < best_match_distance:
+                        best_match_distance = min(first_name_distance, last_name_distance)
+                        best_match = row[0]
+            #TODO -- compare against nicknames here
         return best_match
     
     def get_jobs_by_name(self, name):
-        self._load_jobs_and_points()
+        """
+        Given a valid name, find a list of (preloaded) jobs for that name
+        """
         jobs = self.job_data.get("values", [])
         matching_jobs = []
         for row in jobs:

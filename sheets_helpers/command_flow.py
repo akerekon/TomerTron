@@ -1,6 +1,7 @@
 """
 command_flow is a module to house CommandFlow below
 """
+import json
 
 from sheets_helpers.sheets_data import SheetsData # pylint: disable=import-error disable=no-name-in-module
 
@@ -107,8 +108,17 @@ class CommandFlow:
         input_name = view['state']['values']['b/p6s']['signoff-name']['value']
         matched_name = self.sheets_data.match_closest_name(input_name)
         jobs = self.sheets_data.get_jobs_by_name(matched_name)
-        print(jobs)
-        success_view = {
+        job_json_builder = ""
+        for index, job in enumerate(jobs):
+            day = job[2]
+            where = job[1]
+            what = job[0]
+            job_json_builder += """{"text": { "type": "plain_text", "text": """
+            job_json_builder += '"' + day + " at " + where + " -- " + what + '"'
+            job_json_builder += """}, "value":"""
+            job_json_builder += '"job-' + str(index) + '" },'
+
+        success_view = json.loads("""{
             "type": "modal",
             "title": {
                 "type": "plain_text",
@@ -136,20 +146,7 @@ class CommandFlow:
                         {
                             "type": "radio_buttons",
                             "options": [
-                                {
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Tuesday at 8 -- 1st Floor Bathroom"
-                                    },
-                                    "value": "job-0"
-                                },
-                                {
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Thursday at Mack's -- 1st Floor Bathroom"
-                                    },
-                                    "value": "job-1"
-                                }
+                                """ + job_json_builder + """
                             ],
                             "action_id": "job-option"
                         }
@@ -181,8 +178,9 @@ class CommandFlow:
                     ]
                 }
             ]
-        }
-        ack(response_action="update", view=success_view)
+        }""")
+        print(success_view)
+        ack(response_action="update", view=json.dumps(success_view))
 
     def reassign_command(self, ack, body, client):
         """
