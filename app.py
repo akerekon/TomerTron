@@ -7,9 +7,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, request
 from slack_bolt import App
-from slack_bolt import BoltResponse
 from slack_bolt.adapter.flask import SlackRequestHandler
-from slack_bolt.error import BoltUnhandledRequestError
 from waitress import serve
 
 from sheets_helpers.command_flow import CommandFlow # pylint: disable=import-error disable=no-name-in-module
