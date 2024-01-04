@@ -137,7 +137,7 @@ class CommandFlow:
                     "type": "section",
                     "text": {
                         "type": "plain_text",
-                        "text": "Signing off " + matched_name
+                        "text": "Signing off " """ + matched_name + """
                     }
                 },
                 {
