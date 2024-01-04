@@ -76,7 +76,7 @@ class CommandFlow:
         ack()
         client.views_open(trigger_id=body["trigger_id"], view={
         "type": "modal",
-        "callback-id": "signoff-name-view",
+        "callback_id": "signoff-name-view",
         "title": {
             "type": "plain_text",
             "text": "Signoff a House Job"
