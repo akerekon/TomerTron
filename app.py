@@ -76,12 +76,12 @@ def unsignoff_flow(ack, body, client):
     command_flow.unsignoff_command(ack=ack, body=body, client=client)
 
 @app.error
-def other_requests(error):
+def other_requests(ack, error):
     """
     Ignore all requests that do not apply to TomerTron's logic
     """
     if isinstance(error, BoltUnhandledRequestError):
-        return BoltResponse(status=200, body="")
+        ack()
     else:
         return BoltResponse(status=500, body="TomerTron had a serverside error -- let an admin know")
 
