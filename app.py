@@ -10,7 +10,7 @@ from slack_bolt import App
 from slack_bolt.adapter.flask import SlackRequestHandler
 from waitress import serve
 
-from sheets_helpers.command_flow import CommandFlow # pylint: disable=import-error disable=no-name-in-module
+from TomerTron.sheets_helpers.command_flow import CommandFlow # pylint: disable=import-error disable=no-name-in-module
 
 #Load in environment variables using dotenv, from a .env file
 #These secrets can be accessed by the current administrator of TomerTron via the Slack interface
@@ -29,7 +29,7 @@ handler = SlackRequestHandler(app)
 #Provide a static class to handle all commands and events sent to TomerTron
 command_flow = CommandFlow()
 
-@app.message("tomertron start")
+@app.message("mess start")
 def tomertron_start_command(say):
     """
     Listen for the start command "tomertron start"
