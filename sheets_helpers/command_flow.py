@@ -105,84 +105,110 @@ class CommandFlow:
 	    ]}
     )
     def signoff_name_submitted(self, ack, body, client, view):
+        """
+        Provide a view for matching jobs when a name has been matched
+        """
         input_name = view['state']['values']['b/p6s']['signoff-name']['value']
         matched_name = self.sheets_data.match_closest_name(input_name)
         jobs = self.sheets_data.get_jobs_by_name(matched_name)
-        job_json_builder = ""
-        for index, job in enumerate(jobs):
-            day = job[2]
-            where = job[1]
-            what = job[0]
-            if index != 0:
-                job_json_builder += ","
-            job_json_builder += """{"text": { "type": "plain_text", "text": """
-            job_json_builder += '"' + day + " at " + where + " -- " + what + '"'
-            job_json_builder += """}, "value":"""
-            job_json_builder += '"job-' + str(index) + '" }'
 
-        success_view = """{
-            "type": "modal",
-            "title": {
-                "type": "plain_text",
-                "text": "Which job is this?"
-            },
-            "submit": {
-                "type": "plain_text",
-                "text": "Confirm Signoff"
-            },
-            "close": {
-                "type": "plain_text",
-                "text": "Cancel"
-            },
-            "blocks": [
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "plain_text",
-                        "text": "Signing off """ + matched_name + '"' + """
-                    }
+        if len(jobs) == 0:
+            failure_view = {
+                "type": "modal",
+                "title": {
+                    "type": "plain_text",
+                    "text": "No Jobs Found!"
                 },
-                {
-                    "type": "actions",
-                    "elements": [
-                        {
-                            "type": "radio_buttons",
-                            "options": [
-                                """ + job_json_builder + """
-                            ],
-                            "action_id": "job-option"
+                "close": {
+                    "type": "plain_text",
+                    "text": "Cancel"
+                },
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "plain_text",
+                            "text": matched_name + " does not have any jobs assigned. Check if the bot picked the wrong person, or if this person swapped with someone else."
                         }
-                    ]
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "plain_text",
-                        "text": "If none of the above jobs apply, verify if they've swapped with someone. If so, reassign this job first."
                     }
+                ]
+            }
+            ack(response_action="update", view=failure_view)
+        else:
+            job_json_builder = ""
+            for index, job in enumerate(jobs):
+                day = job[2]
+                where = job[1]
+                what = job[0]
+                if index != 0:
+                    job_json_builder += ","
+                job_json_builder += """{"text": { "type": "plain_text", "text": """
+                job_json_builder += '"' + day + " at " + where + " -- " + what + '"'
+                job_json_builder += """}, "value":"""
+                job_json_builder += '"job-' + str(index) + '" }'
+
+            success_view = """{
+                "type": "modal",
+                "title": {
+                    "type": "plain_text",
+                    "text": "Which job is this?"
                 },
-                {
-                    "type": "actions",
-                    "elements": [
-                        {
-                            "type": "checkboxes",
-                            "options": [
-                                {
-                                    "text": {
-                                        "type": "plain_text",
-                                        "text": "Is this job late?"
-                                    },
-                                    "value": "late"
-                                }
-                            ],
-                            "action_id": "job-late"
+                "submit": {
+                    "type": "plain_text",
+                    "text": "Confirm Signoff"
+                },
+                "close": {
+                    "type": "plain_text",
+                    "text": "Cancel"
+                },
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Signing off """ + matched_name + '"' + """
                         }
-                    ]
-                }
-            ]
-        }"""
-        print(success_view)
-        ack(response_action="update", view=json.loads(success_view))
+                    },
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "radio_buttons",
+                                "options": [
+                                    """ + job_json_builder + """
+                                ],
+                                "action_id": "job-option"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "If none of the above jobs apply, verify if they've swapped with someone. If so, reassign this job first."
+                        }
+                    },
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "checkboxes",
+                                "options": [
+                                    {
+                                        "text": {
+                                            "type": "plain_text",
+                                            "text": "Is this job late?"
+                                        },
+                                        "value": "late"
+                                    }
+                                ],
+                                "action_id": "job-late"
+                            }
+                        ]
+                    }
+                ]
+            }"""
+            ack(response_action="update", view=json.loads(success_view))
 
     def reassign_command(self, ack, body, client):
         """
