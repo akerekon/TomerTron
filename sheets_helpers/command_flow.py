@@ -104,9 +104,7 @@ class CommandFlow:
 	    ]}
     )
     def signoff_name_submitted(self, ack, body, client, view):
-        print(str(view))
-        print(str(body))
-        print(str(client))
+        print(view['state']['values']['b/p6s']['signoff-name']['value'])
         success_view = {
             "type": "modal",
             "title": {
