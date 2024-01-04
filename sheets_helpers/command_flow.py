@@ -1,5 +1,8 @@
-"""sheets_data is a static class to handle Google Sheets API calls"""
-import sheets_data as sd
+"""
+command_flow is a module to house CommandFlow below
+"""
+
+from sheets_data import SheetsData
 
 class CommandFlow:
     """
@@ -7,7 +10,7 @@ class CommandFlow:
     """
 
     #Provide a static class to access house job and point data
-    sheets_data = sd.SheetsData()
+    sheets_data = SheetsData()
 
     def start_command(self, say):
         """

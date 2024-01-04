@@ -1,4 +1,7 @@
-"""Module allowing access to os environment variables."""
+"""
+app.py is the main module, used to receive incoming Slack requests
+"""
+
 import os
 
 from dotenv import load_dotenv
@@ -7,7 +10,7 @@ from slack_bolt import App
 from slack_bolt.adapter.flask import SlackRequestHandler
 from waitress import serve
 
-import sheets_helpers.command_flow as cf
+from sheets_helpers.command_flow import CommandFlow
 
 #Load in environment variables using dotenv, from a .env file
 #These secrets can be accessed by the current administrator of TomerTron via the Slack interface
@@ -23,7 +26,7 @@ flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
 
 #Provide a static class to handle all commands and events sent to TomerTron
-command_flow = cf.CommandFlow()
+command_flow = CommandFlow()
 
 @app.message("tomertron start")
 def tomertron_start_command(say):

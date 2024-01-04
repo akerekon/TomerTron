@@ -1,4 +1,7 @@
-"""os.path is a helper module to allow filesystem access for API tokens"""
+"""
+sheets_data is a module used to house SheetsData below
+"""
+
 import os.path
 
 from google.auth.transport.requests import Request
