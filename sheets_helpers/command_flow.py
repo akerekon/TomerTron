@@ -215,7 +215,11 @@ class CommandFlow:
         print(body)
         print(client)
         print(view)
-        say("Signed off ")
+
+        signedoff_name = " ".join(body["view"]["blocks"][0]["text"]["text"].split(" ")[2:])
+        job_block_id = body["view"]["blocks"][1]["block_id"]
+        job = view["state"]["values"][job_block_id]["job-option"]["selected_option"]
+        say(channel=body["user"]["id"], text="<@"+ body["user"]["username"]+"> signed off " + signedoff_name + " for " + str(job))
 
     def reassign_command(self, ack, body, client):
         """
