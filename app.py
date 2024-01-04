@@ -42,11 +42,6 @@ def handle_message():
     Ignore all messages besides the start command
     """
 
-@app.action("job-option")
-def handle_job_click(ack):
-    """Acknowledge, but ignore when a job is clicked"""
-    ack()
-
 @app.action("signoff")
 def signoff_flow(ack, body, client):
     """
@@ -76,6 +71,11 @@ def unsignoff_flow(ack, body, client):
     Begin the unsignoff process when the "unsignoff" button is clicked
     """
     command_flow.unsignoff_command(ack=ack, body=body, client=client)
+
+@app.action("")
+def handle_job_click(ack):
+    """Acknowledge, but ignore other actions"""
+    ack()
 
 
 @flask_app.route("/slack/events", methods=["POST"])
