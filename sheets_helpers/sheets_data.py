@@ -122,8 +122,12 @@ class SheetsData:
                     matching_jobs.append(row)
         return matching_jobs
     
-    def signoff_job(self, name, job_id):
-        jobs = self.get_jobs_by_name(name)
+    def signoff_job(self, signedoff_name, signedoffby_name, job_id):
+        self._load_jobs_and_points()
+        jobs = self.get_jobs_by_name(signedoff_name)
         job = jobs[int(job_id)]
+        job[3] = signedoffby_name
+
+        print(self.job_data)
         print(job)
 
