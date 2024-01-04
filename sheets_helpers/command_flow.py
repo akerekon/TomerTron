@@ -113,10 +113,12 @@ class CommandFlow:
             day = job[2]
             where = job[1]
             what = job[0]
+            if index != 0:
+                job_json_builder += ","
             job_json_builder += """{"text": { "type": "plain_text", "text": """
             job_json_builder += '"' + day + " at " + where + " -- " + what + '"'
             job_json_builder += """}, "value":"""
-            job_json_builder += '"job-' + str(index) + '" },'
+            job_json_builder += '"job-' + str(index) + '" }'
 
         success_view = """{
             "type": "modal",
@@ -126,11 +128,11 @@ class CommandFlow:
             },
             "submit": {
                 "type": "plain_text",
-                "text": "Confirm Signoff",
+                "text": "Confirm Signoff"
             },
             "close": {
                 "type": "plain_text",
-                "text": "Cancel",
+                "text": "Cancel"
             },
             "blocks": [
                 {
