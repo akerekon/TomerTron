@@ -1,3 +1,4 @@
+"""os.path is a helper module to allow filesystem access for API tokens"""
 import os.path
 
 from google.auth.transport.requests import Request
@@ -8,7 +9,7 @@ from googleapiclient.errors import HttpError
 
 class SheetsData:
     """
-    Provide a static class that will hold data about jobs and points
+    Provide a static class that will hold data about jobs and points and make API calls
     """
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 
@@ -43,7 +44,7 @@ class SheetsData:
         except HttpError as err:
             print(err)
 
-    def load_jobs_and_points(self):
+    def _load_jobs_and_points(self):
         """
         Load in data for house jobs and points from the spreadsheet
         """
@@ -60,7 +61,7 @@ class SheetsData:
             .execute()
         )
 
-    def save_jobs_and_points(self):
+    def _save_jobs_and_points(self):
         """
         Save data for house jobs and points to the spreadsheet
         """

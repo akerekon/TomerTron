@@ -1,12 +1,13 @@
 """Module allowing access to os environment variables."""
 import os
-import sheets_helpers.SheetsData
 
 from dotenv import load_dotenv
 from flask import Flask, request
 from slack_bolt import App
 from slack_bolt.adapter.flask import SlackRequestHandler
 from waitress import serve
+
+import TomerTron.sheets_helpers.command_flow as cf
 
 #Load in environment variables using dotenv, from a .env file
 #These secrets can be accessed by the current administrator of TomerTron via the Slack interface
@@ -21,63 +22,15 @@ app = App(
 flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
 
-#Provide a static access point for house jobs and points
-sheets_data = sheets_helpers.SheetsData.SheetsData()
+#Provide a static class to handle all commands and events sent to TomerTron
+command_flow = cf.CommandFlow()
 
 @app.message("tomertron start")
 def tomertron_start_command(say):
     """
     Listen for the start command "tomertron start"
     """
-    blocks = [
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "What would you like to do?"
-			}
-		},
-		{
-			"type": "actions",
-			"elements": [
-				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": "Signoff a House Job"
-					},
-					"action_id": "signoff"
-				}
-			]
-		},
-		{
-			"type": "actions",
-			"elements": [
-				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": "Reassign a House Job"
-					},
-					"action_id": "reassign"
-				}
-			]
-		},
-		{
-			"type": "actions",
-			"elements": [
-				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": "Unsignoff a House Job"
-					},
-					"action_id": "unsignoff"
-				}
-			]
-		}
-	]
-    say(blocks=blocks, text="What would you like to do?")
+    command_flow.start_command(say=say)
 
 @app.event("message")
 def handle_message():
@@ -86,55 +39,29 @@ def handle_message():
     """
 
 @app.action("signoff")
-def signoff_flow(body, ack, client):
+def signoff_flow(ack, body, client):
     """
     Begin the signoff process when the "signoff" button is clicked
     """
     ack()
-    client.views_open(trigger_id=body["trigger_id"], view={
-        "type": "modal",
-        "title": {
-            "type": "plain_text",
-            "text": "Signoff a House Job"
-        },
-        "submit": {
-            "type": "plain_text",
-            "text": "Confirm Name"
-        },
-        "close": {
-            "type": "plain_text",
-            "text": "Cancel"
-        },
-        "blocks": [
-            {
-                "type": "input",
-                "element": {
-                    "type": "plain_text_input",
-                    "action_id": "signoff-name"
-                },
-                "label": {
-                    "type": "plain_text",
-                    "text": "Who are you signing off?",
-                }
-            }
-	    ]}
-    )
+    command_flow.signoff_command(body=body, client=client)
 
 @app.action("reassign")
-def reassign_flow(body, ack, say):
+def reassign_flow(ack, body, client):
     """
     Begin the reassign process when the "reassign" button is clicked
     """
     ack()
-    say(f"<@{body['user']['id']}> Sent a reassign request")
+    command_flow.reassign_command(body=body, client=client)
+    
 
 @app.action("unsignoff")
-def unsignoff_flow(body, ack, say):
+def unsignoff_flow(ack, body, client):
     """
     Begin the unsignoff process when the "unsignoff" button is clicked
     """
     ack()
-    say(f"<@{body['user']['id']}> Sent an unsignoff request")
+    command_flow.unsignoff_command(body=body, client=client)
 
 
 @flask_app.route("/slack/events", methods=["POST"])
