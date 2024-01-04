@@ -101,3 +101,14 @@ class SheetsData:
                             best_match_count = Levenshtein.distance(input_string, last_name)
                             best_match = row[0]
         return best_match
+    
+    def get_jobs_by_name(self, name):
+        self._load_jobs_and_points()
+        jobs = self.job_data.get("values", [])
+        matching_jobs = []
+        for row in jobs:
+            if len(row) > 0:
+                if row[3] == name:
+                    matching_jobs.append(row)
+        return matching_jobs
+

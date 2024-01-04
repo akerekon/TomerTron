@@ -104,7 +104,10 @@ class CommandFlow:
 	    ]}
     )
     def signoff_name_submitted(self, ack, body, client, view):
-        print(view['state']['values']['b/p6s']['signoff-name']['value'])
+        input_name = view['state']['values']['b/p6s']['signoff-name']['value']
+        matched_name = self.sheets_data.match_closest_name(input_name)
+        jobs = self.sheets_data.get_jobs_by_name(matched_name)
+        print(jobs)
         success_view = {
             "type": "modal",
             "title": {
@@ -124,7 +127,7 @@ class CommandFlow:
                     "type": "section",
                     "text": {
                         "type": "plain_text",
-                        "text": "Signing off <person>"
+                        "text": "Signing off " + matched_name
                     }
                 },
                 {
