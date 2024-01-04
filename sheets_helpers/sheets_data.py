@@ -16,7 +16,7 @@ class SheetsData:
     """
     Provide a static class that will hold data about jobs and points and make API calls
     """
-    SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+    SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
     SPREADSHEET_ID = "1EPY4FXw_K87VMz0MpMEFh5JWgdLMilBnudYXqhMr2-g"
     JOB_RANGE = "AllJobs"
@@ -129,6 +129,6 @@ class SheetsData:
         job[4] = signedoffby_name
 
         self._save_jobs_and_points()
-        
+
         print(job)
 
