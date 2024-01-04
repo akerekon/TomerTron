@@ -14,7 +14,7 @@ class CommandFlow:
     sheets_data = SheetsData()
 
     #Specify which channel TomerTron should send messages to
-    CHANNEL_ID = "C06CPSUJFUG"
+    channel_id = ""
 
     last_bot_timestamp = ""
 
@@ -73,8 +73,8 @@ class CommandFlow:
 			]
 		}
 	    ]
-        result = say(channel=self.CHANNEL_ID, blocks=blocks, text="What would you like to do?")
-        print(result)
+        result = say(blocks=blocks, text="What would you like to do?")
+        self.channel_id = result["channel"]
         self.last_bot_timestamp = result["ts"]
 
     def signoff_command(self, ack, body, client):
@@ -227,8 +227,8 @@ class CommandFlow:
         job_block_id = body["view"]["blocks"][1]["block_id"]
         job = view["state"]["values"][job_block_id]["job-option"]["selected_option"]
 
-        say(channel=self.CHANNEL_ID, text="<@"+ body["user"]["username"]+"> signed off " + signedoff_name + " for " + job['text']['text'])
-        client.chat_delete(channel=self.CHANNEL_ID, ts=self.last_bot_timestamp)
+        say(channel=self.channel_id, text="<@"+ body["user"]["username"]+"> signed off " + signedoff_name + " for " + job['text']['text'])
+        client.chat_delete(channel=self.channel_id, ts=self.last_bot_timestamp)
         self.start_command(say)
 
     def reassign_command(self, ack, body, client):
