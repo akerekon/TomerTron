@@ -180,8 +180,7 @@ class CommandFlow:
                                 "type": "radio_buttons",
                                 "options": [
                                     """ + job_json_builder + """
-                                ],
-                                "action_id": "job-option"
+                                ]
                             }
                         ]
                     },
