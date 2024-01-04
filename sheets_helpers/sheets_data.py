@@ -2,7 +2,9 @@
 sheets_data is a module used to house SheetsData below
 """
 
+import sys
 import os.path
+import Levenshtein
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -71,3 +73,31 @@ class SheetsData:
         sheet = self._get_spreadsheet()
         sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.JOB_RANGE, body=self.job_data).execute()
         sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE, body=self.point_data).execute()
+    
+    def match_closest_name(self, input_string):
+        self._load_jobs_and_points()
+        points = self.point_data.get("values", [])
+
+        best_match_count = sys.maxsize
+        best_match = ""
+
+        if " " in input_string:
+            for row in points[1:]:
+                if len(row) > 0:
+                    if Levenshtein.distance(input_string, row[0]) < best_match_count:
+                        best_match_count = Levenshtein.distance(input_string, row[0])
+                        best_match = row[0]
+        else:
+            for row in points[1:]:
+                if len(row) > 0:
+                    first_name = row[0].split(" ")[0]
+                    last_name = row[0].split(" ")[1]
+                    if Levenshtein.distance(input_string, first_name) < Levenshtein.distance(input_string, last_name):
+                        if Levenshtein.distance(input_string, first_name) < best_match_count:
+                            best_match_count = Levenshtein.distance(input_string, first_name)
+                            best_match = row[0]
+                    else:
+                        if Levenshtein.distance(input_string, last_name) < best_match_count:
+                            best_match_count = Levenshtein.distance(input_string, last_name)
+                            best_match = row[0]
+        return best_match
