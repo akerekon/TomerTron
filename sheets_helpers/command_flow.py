@@ -180,7 +180,7 @@ class CommandFlow:
             ]
         }"""
         print(success_view)
-        ack(response_action="update", view=success_view)
+        ack(response_action="update", view=json.loads(success_view))
 
     def reassign_command(self, ack, body, client):
         """
