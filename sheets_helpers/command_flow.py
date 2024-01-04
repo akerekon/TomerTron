@@ -18,7 +18,7 @@ class CommandFlow:
 
     last_bot_timestamp = ""
 
-    def start_command(self, say):
+    def start_command(self, say, needs_channel=False):
         """
         Provide an interface for a user to select to...
           signoff a house job
@@ -73,7 +73,10 @@ class CommandFlow:
 			]
 		}
 	    ]
-        result = say(blocks=blocks, text="What would you like to do?")
+        if needs_channel:
+            result = say(channel=self.channel_id, blocks=blocks, text="What would you like to do?")
+        else:
+            result = say(blocks=blocks, text="What would you like to do?")
         self.channel_id = result["channel"]
         self.last_bot_timestamp = result["ts"]
 
@@ -229,7 +232,7 @@ class CommandFlow:
 
         say(channel=self.channel_id, text="<@"+ body["user"]["username"]+"> signed off " + signedoff_name + " for " + job['text']['text'])
         client.chat_delete(channel=self.channel_id, ts=self.last_bot_timestamp)
-        self.start_command(say)
+        self.start_command(say, True)
 
     def reassign_command(self, ack, body, client):
         """
