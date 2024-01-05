@@ -186,6 +186,7 @@ def signoff_confirm(ack, body, client, view, say):
     if res.fetchone() is None:
         say(channel=os.getenv("CHANNEL_NAME"), text="<@"+ signedoffby_id +">, please first register your account!")
     else:
+        print(res.fetchone())
         sheets_data.signoff_job(signedoff_name, res.fetchone()[0], job_id)
         say(channel=os.getenv("CHANNEL_NAME"), text="<@"+ signedoffby_id +"> signed off " + signedoff_name + " for " + job['text']['text'])
     con.close()
