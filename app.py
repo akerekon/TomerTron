@@ -86,7 +86,7 @@ def register_flow(ack, body, client):
     """
     command_flow.register_command(ack=ack, body=body, client=client)
 
-@app.command("start")
+@app.command("/start")
 def register_command(ack, body, client):
     """
     Begin the Slack account registration process when the "start" command is sent
