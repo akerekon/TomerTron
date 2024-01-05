@@ -50,8 +50,8 @@ def signoff_flow(ack, body, client):
     command_flow.signoff_begin(ack=ack, body=body, client=client)
 
 @app.view("signoff-name-view")
-def signoff_show_jobs(ack, body, client, view):
-    command_flow.signoff_show_jobs(ack=ack, body=body, client=client, view=view)
+def signoff_show_jobs(ack, view):
+    command_flow.signoff_show_jobs(ack=ack, view=view)
 
 @app.view("signoff-confirm")
 def signoff_confirm(ack, body, client, view, say):
