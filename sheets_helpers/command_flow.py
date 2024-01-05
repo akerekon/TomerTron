@@ -327,6 +327,10 @@ class CommandFlow:
                         },
                         "options": brother_blocks,
                         "action_id": "registration-block"
+                    },
+                    "label": {
+                        "type": "plain_text",
+                        "text": "What is your name?",
                     }
                 }
             ]
