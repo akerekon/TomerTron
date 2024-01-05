@@ -79,6 +79,13 @@ def unsignoff_flow(ack, body, client):
     """
     command_flow.unsignoff_command(ack=ack, body=body, client=client)
 
+@app.action("register")
+def register_flow(ack, body, client):
+    """
+    Begin the Slack account registration process when the "register" button is clicked
+    """
+    command_flow.register_command(ack=ack, body=body, client=client)
+
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
     """

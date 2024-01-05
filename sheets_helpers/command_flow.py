@@ -71,6 +71,19 @@ class CommandFlow:
 					"action_id": "unsignoff"
 				}
 			]
+		},
+        {
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Register Account"
+					},
+					"action_id": "register"
+				}
+			]
 		}
 	    ]
         if needs_channel:
@@ -270,3 +283,51 @@ class CommandFlow:
         Provide a flow to unsignoff a housejob, opening new views as needed
         """
         ack()
+    def register_command(self, ack, body, client):
+        """
+        Provide a flow to register a Slack account to a name
+        """
+        ack()
+        all_brothers = self.sheets_data.all_brothers()
+        brother_blocks = []
+        for brother in all_brothers:
+            brother_blocks.append(
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": brother,
+                    },
+                    "value": brother
+                }
+            )
+        client.views_open(trigger_id=body["trigger_id"], view={
+            "type": "modal",
+            "callback_id": "registration-view",
+            "title": {
+                "type": "plain_text",
+                "text": "What is your name?"
+            },
+            "submit": {
+                "type": "plain_text",
+                "text": "Confirm Name"
+            },
+            "close": {
+                "type": "plain_text",
+                "text": "Cancel"
+            },
+            "blocks": [
+                {
+                    "type": "input",
+                    "element": {
+                        "type": "static_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Select your name",
+                            "emoji": True
+                        },
+                        "options": brother_blocks,
+                        "action_id": "registration-block"
+                    }
+                }
+            ]
+        })

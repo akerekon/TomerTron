@@ -140,6 +140,14 @@ class SheetsData:
         self._save_jobs_and_points()
 
         print(job)
+    
+    def all_brothers(self):
+        points = self.point_data.get("values", [])
+        brother_names = []
+        for row in points[1:]:
+            if len(row) > 0:
+                brother_names.append(row[0])
+        return brother_names
 
     def available_signoffs(self):
         """
