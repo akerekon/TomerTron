@@ -109,7 +109,7 @@ class SheetsData:
             if row[0] == signedoff_name: # Update signoff
                 row[1] = float(row[1]) + 2;
             if row [0] == signedoffby_name: # Update ass ho
-                row[2] = float(row[1]) + 0.1;
+                row[2] = float(row[2]) + 0.1;
 
         self._save_jobs_and_points()
     
