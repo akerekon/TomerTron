@@ -4,7 +4,7 @@ A bot that manages the house jobs for [Alpha Chi Rho Delta Sigma Phi](https://ax
 Made by Andrew Kerekon (1162), Brendan Leu, ...
 
 # Setup
-We recommend running the bot on Python `3.11.7`. A useful tool for managing python environments is [pyenv](https://github.com/pyenv/pyenv).
+We recommend running the bot on Python `3.11.7`. A useful tool for managing python versions is [pyenv](https://github.com/pyenv/pyenv).
 
 You may need to port forward the bot server. In production, a static IP and properly forwarded port should be used, but locally a service like [ngrok](https://ngrok.com/download) or [CloudFlare Tunnels](https://www.cloudflare.com/products/tunnel/) should work fine.
 
