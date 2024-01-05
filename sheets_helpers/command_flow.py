@@ -242,7 +242,8 @@ class CommandFlow:
                     }
                 ]
             }
-            ack(response_action="update", view=json.loads(success_view))
+            ack(response_action="update", view=success_view)
+
     def signoff_confirm(self, ack, body, client, view, say):
         ack()
 
