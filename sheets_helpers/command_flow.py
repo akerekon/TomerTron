@@ -262,14 +262,19 @@ class CommandFlow:
         ack()
 
         signedoff_name = " ".join(body["view"]["blocks"][0]["text"]["text"].split(" ")[2:])
-        signedoffby_name = body["user"]["username"]
+        signedoffby_id = body["user"]["username"]
         job_block_id = body["view"]["blocks"][1]["block_id"]
         job = view["state"]["values"][job_block_id]["job-option"]["selected_option"]
         job_id = view["state"]["values"][job_block_id]["job-option"]["selected_option"]["value"].split("-")[1]
 
-        self.sheets_data.signoff_job(signedoff_name, signedoffby_name, job_id)
-
-        say(channel=self.channel_id, text="<@"+ signedoffby_name +"> signed off " + signedoff_name + " for " + job['text']['text'])
+        con = sqlite3.connect("find_name_from_slack_id.db")
+        cur = con.cursor()
+        signedoffby_name = cur.execute("SELECT name FROM slack_id WHERE slack_id=" + signedoffby_id)
+        if len(signedoffby_name) == 0:
+            say(channel=self.channel_id, text="<@"+ signedoffby_id +">, please first register your account!")
+        else:
+            self.sheets_data.signoff_job(signedoff_name, signedoffby_name, job_id)
+            say(channel=self.channel_id, text="<@"+ signedoffby_id +"> signed off " + signedoff_name + " for " + job['text']['text'])
         client.chat_delete(channel=self.channel_id, ts=self.last_bot_timestamp)
         self.start_command(say, True)
 
@@ -348,5 +353,6 @@ class CommandFlow:
         cur.execute("CREATE TABLE IF NOT EXISTS slack_id(slack_id, name)")
         cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
         con.commit()
+        con.close()
 
         say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
