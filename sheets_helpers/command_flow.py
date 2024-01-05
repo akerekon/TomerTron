@@ -273,7 +273,8 @@ class CommandFlow:
         if res.fetchone() is None:
             say(channel=self.channel_id, text="<@"+ signedoffby_id +">, please first register your account!")
         else:
-            self.sheets_data.signoff_job(signedoff_name, res.fetchone(), job_id)
+            print(res.fetchone())
+            self.sheets_data.signoff_job(signedoff_name, "test", job_id)
             say(channel=self.channel_id, text="<@"+ signedoffby_id +"> signed off " + signedoff_name + " for " + job['text']['text'])
         con.close()
         client.chat_delete(channel=self.channel_id, ts=self.last_bot_timestamp)
