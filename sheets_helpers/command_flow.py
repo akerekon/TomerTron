@@ -335,4 +335,6 @@ class CommandFlow:
             ]
         })
     def register_submitted(self, ack, body, client, view, say):
-        print(view)
+        print(body)
+        registration_block_id = view['blocks'][0]['block_id']
+        matched_name = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
