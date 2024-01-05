@@ -187,13 +187,14 @@ class CommandFlow:
                 where = job[1]
                 what = job[0]
 
-                job_json_builder.append({
-                    "text": {
-                        "type": "plain_text",
-                        "text": f"{day} {where} -- {what}"
-                    },
-                    "value": f"job-{str(index)}"
-                })
+                if job[4] == "E-SIGNOFF":
+                    job_json_builder.append({
+                        "text": {
+                            "type": "plain_text",
+                            "text": f"{day} {where} -- {what}"
+                        },
+                        "value": f"job-{str(index)}"
+                    })
 
             success_view = {
                 "type": "modal",
