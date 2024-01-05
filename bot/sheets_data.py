@@ -2,9 +2,7 @@
 sheets_data is a module used to house SheetsData below
 """
 
-import sys
 import os.path
-import Levenshtein
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -23,6 +21,9 @@ class SheetsData:
     JOB_RANGE = "House_Jobs!A2:G256"
     POINT_RANGE = "Week_Scores!A1:F256"
     NICKNAME_RANGE = "Nicknames"
+
+    signoff_points = 2
+    signoff_ho_man_points = 0.1
 
     job_data = []
     point_data = []
@@ -95,7 +96,7 @@ class SheetsData:
                     matching_jobs.append(row)
         return matching_jobs
     
-    def signoff_job(self, signedoff_name, signedoffby_name, job_id):
+    def signoff_job(self, signedoff_name, signedoffby_name, job_id, is_late):
         self._load_jobs_and_points()
 
         # Update jobs
@@ -107,10 +108,37 @@ class SheetsData:
         points = self.point_data.get("values", [])
         for row in points:
             if row[0] == signedoff_name: # Update signoff
-                row[1] = float(row[1]) + 2;
+                row[1] = float(row[1]) + self.signoff_points
             if row [0] == signedoffby_name: # Update ass ho
-                row[2] = float(row[2]) + 0.1;
+                row[2] = float(row[2]) + self.signoff_ho_man_points
 
+        # Is late
+        job[5] = "y" if is_late else "n"
+
+        self._save_jobs_and_points()
+
+    def unsignoff_job(self, unsignedoff_name, unsignedoffby_name, job_id):
+        self._load_jobs_and_points()
+
+        # Get job
+        jobs = self.get_jobs_by_name(unsignedoff_name)
+        job = jobs[int(job_id)]
+
+        # Update scores
+        points = self.point_data.get("values", [])
+        for row in points:
+            if row[0] == unsignedoff_name: # Update signoff
+                row[1] = float(row[1]) - self.signoff_points
+            if row [0] == job[4]: # Update ass ho
+                row[2] = float(row[2]) - self.signoff_ho_man_points
+        
+        # TODO: Not sure how ho man points work, seems fair to remove the 0.1 from the previous sign-off and maybe give the points to the new one who delt with it?
+
+        # Update lateness
+        job[5] = "n"
+
+        # Update job sheet
+        job[4] = "E-SIGNOFF"
         self._save_jobs_and_points()
     
     def all_brothers(self):
@@ -122,7 +150,7 @@ class SheetsData:
                 brother_names.append(row[0])
         return brother_names
 
-    def available_signoffs(self):
+    def available_signoffs(self, unsignoff=False):
         """
         Gets all of the brothers currently with a job and gets their nicknames
         """
@@ -133,7 +161,7 @@ class SheetsData:
         nicknames = self.nickname_data.get("values", [])
 
         for row in jobs:
-            if len(row) > 4 and row[4] == "E-SIGNOFF":
+            if len(row) > 4 and (row[4] == "E-SIGNOFF") ^ unsignoff:
                 available[row[3]] = None
                 
         for row in nicknames:
