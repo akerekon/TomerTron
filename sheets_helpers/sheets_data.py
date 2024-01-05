@@ -145,19 +145,19 @@ class SheetsData:
         """
         Gets all of the brothers currently with a job and gets their nicknames
         """
-        available = {};
+        available = {}
 
         self._load_jobs_and_points()
-        jobs = self.job_data.get("values", []);
-        nicknames = self.nickname_data.get("values", []);
+        jobs = self.job_data.get("values", [])
+        nicknames = self.nickname_data.get("values", [])
 
         for row in jobs:
             if len(row) > 3:
-                available[row[3]] = None;
+                available[row[3]] = None
                 
         for row in nicknames:
             if row[0] in available:
-                available[row[0]] = row[1];
+                available[row[0]] = row[1]
 
-        return dict(sorted(available.items()));
+        return dict(sorted(available.items()))
 

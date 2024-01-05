@@ -81,9 +81,14 @@ class CommandFlow:
         self.last_bot_timestamp = result["ts"]
 
     def signoff_command(self, ack, body, client):
+        """
+        Provide a flow to signoff a housejob, opening new views as needed
+        """
+        ack()
+
         # Build the list of brothers to select from
-        available = self.sheets_data.available_signoffs();
-        brother_blocks = [];
+        available = self.sheets_data.available_signoffs()
+        brother_blocks = []
         for brother in available:
             brother_blocks.append(
                 {
@@ -94,13 +99,9 @@ class CommandFlow:
                     },
                     "value": brother
                 }
-            );
-
-
-        """
-        Provide a flow to signoff a housejob, opening new views as needed
-        """
-        ack()
+            )
+        
+        # Open the view
         client.views_open(trigger_id=body["trigger_id"], view={
         "type": "modal",
         "callback_id": "signoff-name-view",
@@ -124,20 +125,19 @@ class CommandFlow:
                     "placeholder": {
                         "type": "plain_text",
                         "text": "Select a brother/postulant",
-                        "emoji": True
                     },
                     "options": brother_blocks,
                     "action_id": "static_select-action"
                 },
                 "label": {
                     "type": "plain_text",
-                    "text": "Who are you signing off?",
-                    "emoji": True
+                    "text": "Who are you signing off?"
                 }
             }
         ]
     }
     )
+        
     def signoff_name_submitted(self, ack, body, client, view):
         """
         Provide a view for matching jobs when a name has been matched
@@ -169,20 +169,21 @@ class CommandFlow:
             }
             ack(response_action="update", view=failure_view)
         else:
-            #TODO Refactor to use f string
-            job_json_builder = ""
+            job_json_builder = []
             for index, job in enumerate(jobs):
                 day = job[2]
                 where = job[1]
                 what = job[0]
-                if index != 0:
-                    job_json_builder += ","
-                job_json_builder += """{"text": { "type": "plain_text", "text": """
-                job_json_builder += '"' + day + " at " + where + " -- " + what + '"'
-                job_json_builder += """}, "value":"""
-                job_json_builder += '"job-' + str(index) + '" }'
 
-            success_view = """{
+                job_json_builder.append({
+                    "text": {
+                        "type": "plain_text",
+                        "text": f"{day} {where} -- {what}"
+                    },
+                    "value": f"job-{str(index)}"
+                })
+
+            success_view = {
                 "type": "modal",
                 "callback_id": "signoff-confirm",
                 "title": {
@@ -202,7 +203,7 @@ class CommandFlow:
                         "type": "section",
                         "text": {
                             "type": "plain_text",
-                            "text": "Signing off """ + matched_name + '"' + """
+                            "text": f"Signing off {matched_name}"
                         }
                     },
                     {
@@ -210,9 +211,7 @@ class CommandFlow:
                         "elements": [
                             {
                                 "type": "radio_buttons",
-                                "options": [
-                                    """ + job_json_builder + """
-                                ],
+                                "options": job_json_builder,
                                 "action_id": "job-option"
                             }
                         ]
@@ -243,7 +242,7 @@ class CommandFlow:
                         ]
                     }
                 ]
-            }"""
+            }
             ack(response_action="update", view=json.loads(success_view))
     def signoff_confirm(self, ack, body, client, view, say):
         ack()
