@@ -138,8 +138,6 @@ class SheetsData:
         job[4] = signedoffby_name
 
         self._save_jobs_and_points()
-
-        print(job)
     
     def all_brothers(self):
         self._load_jobs_and_points()
