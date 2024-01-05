@@ -1,10 +1,10 @@
 """
 command_flow is a module to house CommandFlow below
 """
-import reassign_flow
-import register_flow
-import signoff_flow
-import unsignoff_flow
+from . import reassign_flow
+from . import register_flow
+from . import signoff_flow
+from . import unsignoff_flow
 
 from sheets_helpers.sheets_data import SheetsData # pylint: disable=import-error disable=no-name-in-module
 
