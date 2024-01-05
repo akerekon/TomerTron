@@ -51,3 +51,7 @@ The ID of the Google Sheet to be used is in `bot/sheets_data.py` in a variable c
 # Other useful resources
 - [Slack Block Builder](https://app.slack.com/block-kit-builder)
 - [Bolt Start Guide](https://slack.dev/bolt-python/tutorial/getting-started-http)
+
+# Conventions
+If people dont follow these so be it, but try your best.
+- Actions begin with the name of the flow they belong to such as they follow `flow-action`, such as `signoff-begin` in `signoff.py`.
