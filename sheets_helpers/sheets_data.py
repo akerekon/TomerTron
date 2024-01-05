@@ -142,6 +142,7 @@ class SheetsData:
         print(job)
     
     def all_brothers(self):
+        self._load_jobs_and_points()
         points = self.point_data.get("values", [])
         brother_names = []
         for row in points[1:]:
