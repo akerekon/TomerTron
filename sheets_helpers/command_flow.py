@@ -262,7 +262,7 @@ class CommandFlow:
         ack()
 
         signedoff_name = " ".join(body["view"]["blocks"][0]["text"]["text"].split(" ")[2:])
-        signedoffby_id = body["user"]["username"]
+        signedoffby_id = body["user"]["id"]
         job_block_id = body["view"]["blocks"][1]["block_id"]
         job = view["state"]["values"][job_block_id]["job-option"]["selected_option"]
         job_id = view["state"]["values"][job_block_id]["job-option"]["selected_option"]["value"].split("-")[1]
