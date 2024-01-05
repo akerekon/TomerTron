@@ -101,7 +101,6 @@ class CommandFlow:
                 }
             )
         
-        # Open the view
         client.views_open(trigger_id=body["trigger_id"], view={
         "type": "modal",
         "callback_id": "signoff-name-view",
@@ -127,7 +126,7 @@ class CommandFlow:
                         "text": "Select a brother/postulant",
                     },
                     "options": brother_blocks,
-                    "action_id": "static_select-action"
+                    "action_id": "signoff-block"
                 },
                 "label": {
                     "type": "plain_text",
@@ -142,8 +141,8 @@ class CommandFlow:
         """
         Provide a view for matching jobs when a name has been matched
         """
-        input_name = view['state']['values']['signoff-block']['signoff-name']['value']
-        matched_name = self.sheets_data.match_closest_name(input_name)
+        signoff_block_id = view['blocks'][0]['block_id']
+        matched_name = view['state']['values'][signoff_block_id]['signoff-block']['selected_option']['value']
         jobs = self.sheets_data.get_jobs_by_name(matched_name)
 
         if len(jobs) == 0:
