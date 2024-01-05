@@ -142,7 +142,6 @@ class CommandFlow:
         """
         Provide a view for matching jobs when a name has been matched
         """
-        print(view)
         input_name = view['state']['values']['signoff-block']['signoff-name']['value']
         matched_name = self.sheets_data.match_closest_name(input_name)
         jobs = self.sheets_data.get_jobs_by_name(matched_name)
@@ -250,10 +249,14 @@ class CommandFlow:
         ack()
 
         signedoff_name = " ".join(body["view"]["blocks"][0]["text"]["text"].split(" ")[2:])
+        signedoffby_name = body["user"]["username"]
         job_block_id = body["view"]["blocks"][1]["block_id"]
         job = view["state"]["values"][job_block_id]["job-option"]["selected_option"]
+        job_id = view["state"]["values"][job_block_id]["job-option"]["selected_option"]["value"].split("-")[1]
 
-        say(channel=self.channel_id, text="<@"+ body["user"]["username"]+"> signed off " + signedoff_name + " for " + job['text']['text'])
+        self.sheets_data.signoff_job(signedoff_name, signedoffby_name, job_id)
+
+        say(channel=self.channel_id, text="<@"+ signedoffby_name +"> signed off " + signedoff_name + " for " + job['text']['text'])
         client.chat_delete(channel=self.channel_id, ts=self.last_bot_timestamp)
         self.start_command(say, True)
 

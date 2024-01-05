@@ -16,11 +16,12 @@ class SheetsData:
     """
     Provide a static class that will hold data about jobs and points and make API calls
     """
-    SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+    SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
     SPREADSHEET_ID = "1EPY4FXw_K87VMz0MpMEFh5JWgdLMilBnudYXqhMr2-g"
-    JOB_RANGE = "AllJobs"
-    POINT_RANGE = "PointRange"
+
+    JOB_RANGE = "House_Jobs!A2:G256"
+    POINT_RANGE = "Week_Scores!A1:F256"
     NICKNAME_RANGE = "Nicknames"
 
     job_data = []
@@ -79,8 +80,8 @@ class SheetsData:
         Save data for house jobs and points to the spreadsheet
         """
         sheet = self._get_spreadsheet()
-        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.JOB_RANGE, body=self.job_data).execute()
-        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE, body=self.point_data).execute()
+        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.JOB_RANGE, body=self.job_data, valueInputOption="RAW").execute()
+        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE, body=self.point_data, valueInputOption="RAW").execute()
     
     def match_closest_name(self, input_string):
         """
@@ -129,6 +130,16 @@ class SheetsData:
                 if row[3] == name:
                     matching_jobs.append(row)
         return matching_jobs
+    
+    def signoff_job(self, signedoff_name, signedoffby_name, job_id):
+        self._load_jobs_and_points()
+        jobs = self.get_jobs_by_name(signedoff_name)
+        job = jobs[int(job_id)]
+        job[4] = signedoffby_name
+
+        self._save_jobs_and_points()
+
+        print(job)
 
     def available_signoffs(self):
         """
