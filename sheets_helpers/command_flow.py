@@ -82,8 +82,8 @@ class CommandFlow:
 
     def signoff_command(self, ack, body, client):
         # Build the list of brothers to select from
-        available = self.sheets_data.available_signoffs();
-        brother_blocks = [];
+        available = self.sheets_data.available_signoffs()
+        brother_blocks = []
         for brother in available:
             brother_blocks.append(
                 {
@@ -94,7 +94,7 @@ class CommandFlow:
                     },
                     "value": brother
                 }
-            );
+            )
 
 
         """
@@ -127,7 +127,7 @@ class CommandFlow:
                         "emoji": True
                     },
                     "options": brother_blocks,
-                    "action_id": "static_select-action"
+                    "action_id": "signoff-block"
                 },
                 "label": {
                     "type": "plain_text",
