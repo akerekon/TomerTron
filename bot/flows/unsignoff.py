@@ -3,6 +3,8 @@ import os
 
 from bot import slack_app, sheets_data
 
+# TODO: Fix (notify user) when there are no jobs to un-sign off (maybe look at "No Jobs Found!" modal)
+
 @slack_app.action("unsignoff")
 def unsignoff_flow(ack, body, client):
     """
@@ -157,11 +159,13 @@ def unsignoff_show_jobs(ack, body, client, view):
 def unsignoff_confirm(ack, body, client, view, say):
     ack()
 
+    # Get unsignoff info
     unsignedoff_name = " ".join(body["view"]["blocks"][0]["text"]["text"].split(" ")[2:])
     unsignedoffby_id = body["user"]["id"]
     job = view["state"]["values"]["job-block"]["unsignoff-job-option"]["selected_option"]
     job_id = view["state"]["values"]["job-block"]["unsignoff-job-option"]["selected_option"]["value"].split("-")[1]
 
+    # Send message
     con = sqlite3.connect("find_name_from_slack_id.db")
     cur = con.cursor()
     res = cur.execute("SELECT name FROM slack_id WHERE slack_id='" + unsignedoffby_id + "'")

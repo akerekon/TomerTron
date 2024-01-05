@@ -3,6 +3,8 @@ import os
 
 from bot import slack_app, sheets_data
 
+# TODO: Fix (notify user) when there are no jobs to sign off (maybe look at "No Jobs Found!" modal)
+
 @slack_app.action("signoff")
 def signoff_flow(ack, body, client):
     """
@@ -182,6 +184,8 @@ def signoff_confirm(ack, body, client, view, say):
     job = view["state"]["values"]["job-block"]["signoff-job-option"]["selected_option"]
     job_id = view["state"]["values"]["job-block"]["signoff-job-option"]["selected_option"]["value"].split("-")[1]
 
+    # Get checkbox info
+    # TODO: What is the bonus column? Should we add stuff for it?
     job_checkboxes = view["state"]["values"]["info-block"]["signoff-job-checkboxes"]['selected_options']
     is_late = False
 
@@ -189,6 +193,7 @@ def signoff_confirm(ack, body, client, view, say):
         if (option['value'] == "late"):
             is_late = True
 
+    # Send message
     con = sqlite3.connect("find_name_from_slack_id.db")
     cur = con.cursor()
     res = cur.execute("SELECT name FROM slack_id WHERE slack_id='" + signedoffby_id + "'")
