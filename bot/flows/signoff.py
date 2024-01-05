@@ -1,3 +1,6 @@
+import sqlite3
+import os
+
 from bot import slack_app, sheets_data
 
 @slack_app.action("signoff")
@@ -172,16 +175,20 @@ def signoff_confirm(ack, body, client, view, say):
     ack()
 
     signedoff_name = " ".join(body["view"]["blocks"][0]["text"]["text"].split(" ")[2:])
-    signedoffby_name = body["user"]["username"]
+    signedoffby_id = body["user"]["id"]
     job_block_id = body["view"]["blocks"][1]["block_id"]
     job = view["state"]["values"][job_block_id]["job-option"]["selected_option"]
     job_id = view["state"]["values"][job_block_id]["job-option"]["selected_option"]["value"].split("-")[1]
 
-    sheets_data.signoff_job(signedoff_name, signedoffby_name, job_id)
-
-    # say(channel=self.channel_id, text="<@"+ signedoffby_name +"> signed off " + signedoff_name + " for " + job['text']['text'])
-    # client.chat_delete(channel=self.channel_id, ts=self.last_bot_timestamp)
-    # self.start_command(say, True)
+    con = sqlite3.connect("find_name_from_slack_id.db")
+    cur = con.cursor()
+    res = cur.execute("SELECT name FROM slack_id WHERE slack_id='" + signedoffby_id + "'")
+    if res.fetchone() is None:
+        say(channel=os.getenv("CHANNEL_NAME"), text="<@"+ signedoffby_id +">, please first register your account!")
+    else:
+        sheets_data.signoff_job(signedoff_name, res.fetchone()[0], job_id)
+        say(channel=os.getenv("CHANNEL_NAME"), text="<@"+ signedoffby_id +"> signed off " + signedoff_name + " for " + job['text']['text'])
+    con.close()
 
 @slack_app.action("job-option")
 def job_selected(ack):
