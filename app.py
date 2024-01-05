@@ -86,10 +86,10 @@ def register_flow(ack, body, client):
     """
     command_flow.register_command(ack=ack, body=body, client=client)
 
-@app.command("/start")
+@app.command("/tomertron")
 def register_command(ack, body, client):
     """
-    Begin the Slack account registration process when the "start" command is sent
+    Begin the Slack account registration process when the "tomertron" command is sent
     """
     command_flow.register_command(ack=ack, body=body, client=client)
 
