@@ -269,12 +269,13 @@ class CommandFlow:
 
         con = sqlite3.connect("find_name_from_slack_id.db")
         cur = con.cursor()
-        signedoffby_name = cur.execute("SELECT name FROM slack_id WHERE slack_id='" + signedoffby_id + "'")
-        if len(signedoffby_name) == 0:
+        res = cur.execute("SELECT name FROM slack_id WHERE slack_id='" + signedoffby_id + "'")
+        if res.fetchone() is None:
             say(channel=self.channel_id, text="<@"+ signedoffby_id +">, please first register your account!")
         else:
-            self.sheets_data.signoff_job(signedoff_name, signedoffby_name, job_id)
+            self.sheets_data.signoff_job(signedoff_name, res.fetchone(), job_id)
             say(channel=self.channel_id, text="<@"+ signedoffby_id +"> signed off " + signedoff_name + " for " + job['text']['text'])
+        con.close()
         client.chat_delete(channel=self.channel_id, ts=self.last_bot_timestamp)
         self.start_command(say, True)
 
