@@ -335,3 +335,11 @@ class CommandFlow:
                 }
             ]
         })
+    def register_submitted(self, ack, body, client, view, say):
+        ack()
+
+        registration_block_id = view['blocks'][0]['block_id']
+        matched_name = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
+        user_slack_id = body['user']['id']
+
+        say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")

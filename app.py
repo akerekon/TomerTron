@@ -86,6 +86,20 @@ def register_flow(ack, body, client):
     """
     command_flow.register_command(ack=ack, body=body, client=client)
 
+@app.command("/tomertron")
+def register_command(ack, body, client):
+    """
+    Begin the Slack account registration process when the "tomertron" command is sent
+    """
+    command_flow.register_command(ack=ack, body=body, client=client)
+
+@app.view("registration-view")
+def register_submitted(ack, body, client, view, say):
+    """
+    Send the user a DM when they have successfully registered their account
+    """
+    command_flow.register_submitted(ack=ack, body=body, client=client, view=view, say=say)
+
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
     """
