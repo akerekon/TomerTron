@@ -54,4 +54,4 @@ The ID of the Google Sheet to be used is in `bot/sheets_data.py` in a variable c
 
 # Conventions
 If people dont follow these so be it, but try your best.
-- Actions begin with the name of the flow they belong to such as they follow `flow-action`, such as `signoff-begin` in `signoff.py`.
+- Actions begin with the name of the flow they belong to such that they follow a format of `flow-action`; for example: `signoff-begin` in `signoff.py`.
