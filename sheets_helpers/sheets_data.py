@@ -19,11 +19,14 @@ class SheetsData:
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
     SPREADSHEET_ID = "1EPY4FXw_K87VMz0MpMEFh5JWgdLMilBnudYXqhMr2-g"
+
     JOB_RANGE = "House_Jobs!A2:G256"
     POINT_RANGE = "Week_Scores!A1:F256"
+    NICKNAME_RANGE = "Nicknames"
 
     job_data = []
     point_data = []
+    nickname_data = []
 
     def _get_spreadsheet(self):
         """
@@ -63,6 +66,12 @@ class SheetsData:
         self.point_data = (
             sheet.values()
             .get(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE)
+            .execute()
+        )
+
+        self.nickname_data = (
+            sheet.values()
+            .get(spreadsheetId=self.SPREADSHEET_ID, range=self.NICKNAME_RANGE)
             .execute()
         )
 
@@ -131,4 +140,24 @@ class SheetsData:
         self._save_jobs_and_points()
 
         print(job)
+
+    def available_signoffs(self):
+        """
+        Gets all of the brothers currently with a job and gets their nicknames
+        """
+        available = {};
+
+        self._load_jobs_and_points()
+        jobs = self.job_data.get("values", []);
+        nicknames = self.nickname_data.get("values", []);
+
+        for row in jobs:
+            if len(row) > 3:
+                available[row[3]] = None;
+                
+        for row in nicknames:
+            if row[0] in available:
+                available[row[0]] = row[1];
+
+        return dict(sorted(available.items()));
 
