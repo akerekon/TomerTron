@@ -27,14 +27,12 @@ handler = SlackRequestHandler(slack_app)
 
 #Provide a static class to access data from the Google Sheet
 sheets_data = SheetsData()
-#Specify which channel TomerTron should send messages to
-channel_id = ""
-last_bot_timestamp = ""
 
 import bot.flows.start
 import bot.flows.signoff
 import bot.flows.unsignoff
 import bot.flows.reassign
+import bot.flows.registration
 
 @slack_app.event("message")
 def handle_message():
