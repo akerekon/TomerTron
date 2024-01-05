@@ -69,8 +69,6 @@ def register_submitted(ack, body, client, view, say):
 
     con = sqlite3.connect("find_name_from_slack_id.db")
     cur = con.cursor()
-
-    cur.execute("CREATE TABLE IF NOT EXISTS slack_id(slack_id, name)")
     cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
     con.commit()
     con.close()

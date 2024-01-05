@@ -80,8 +80,8 @@ class SheetsData:
         Save data for house jobs and points to the spreadsheet
         """
         sheet = self._get_spreadsheet()
-        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.JOB_RANGE, body=self.job_data, valueInputOption="RAW").execute()
-        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE, body=self.point_data, valueInputOption="RAW").execute()
+        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.JOB_RANGE, body=self.job_data, valueInputOption="USER_ENTERED").execute()
+        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE, body=self.point_data, valueInputOption="USER_ENTERED").execute()
     
     def get_jobs_by_name(self, name):
         """
@@ -107,9 +107,9 @@ class SheetsData:
         points = self.point_data.get("values", [])
         for row in points:
             if row[0] == signedoff_name: # Update signoff
-                row[1] = float(row[1]) + 1;
+                row[1] = float(row[1]) + 2;
             if row [0] == signedoffby_name: # Update ass ho
-                row[2] = float(row[1]) + 0.1;
+                row[2] = float(row[2]) + 0.1;
 
         self._save_jobs_and_points()
     

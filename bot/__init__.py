@@ -3,6 +3,7 @@ app.py is the main module, used to receive incoming Slack requests
 """
 
 import os
+import sqlite3
 
 from dotenv import load_dotenv
 from flask import Flask, request
@@ -27,6 +28,13 @@ handler = SlackRequestHandler(slack_app)
 
 #Provide a static class to access data from the Google Sheet
 sheets_data = SheetsData()
+
+#Reference a SQL database that maps Slack IDs to full names
+con = sqlite3.connect("find_name_from_slack_id.db")
+cur = con.cursor()
+cur.execute("CREATE TABLE IF NOT EXISTS slack_id(slack_id, name)")
+con.commit()
+con.close()
 
 import bot.flows.start
 import bot.flows.signoff

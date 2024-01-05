@@ -183,11 +183,12 @@ def signoff_confirm(ack, body, client, view, say):
     con = sqlite3.connect("find_name_from_slack_id.db")
     cur = con.cursor()
     res = cur.execute("SELECT name FROM slack_id WHERE slack_id='" + signedoffby_id + "'")
-    if res.fetchone() is None:
-        say(channel=os.getenv("CHANNEL_NAME"), text="<@"+ signedoffby_id +">, please first register your account!")
+    matched_name = res.fetchone()
+    if matched_name is None:
+        say(channel=os.getenv("CHANNEL_ID"), text="<@"+ signedoffby_id +">, please first register your account!")
     else:
-        sheets_data.signoff_job(signedoff_name, res.fetchone()[0], job_id)
-        say(channel=os.getenv("CHANNEL_NAME"), text="<@"+ signedoffby_id +"> signed off " + signedoff_name + " for " + job['text']['text'])
+        sheets_data.signoff_job(signedoff_name, matched_name[0], job_id)
+        say(channel=os.getenv("CHANNEL_ID"), text="<@"+ signedoffby_id +"> signed off " + signedoff_name + " for " + job['text']['text'])
     con.close()
 
 @slack_app.action("job-option")
