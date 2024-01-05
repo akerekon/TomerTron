@@ -269,7 +269,7 @@ class CommandFlow:
 
         con = sqlite3.connect("find_name_from_slack_id.db")
         cur = con.cursor()
-        signedoffby_name = cur.execute("SELECT name FROM slack_id WHERE slack_id=" + signedoffby_id)
+        signedoffby_name = cur.execute("SELECT name FROM slack_id WHERE slack_id='" + signedoffby_id + "'")
         if len(signedoffby_name) == 0:
             say(channel=self.channel_id, text="<@"+ signedoffby_id +">, please first register your account!")
         else:
