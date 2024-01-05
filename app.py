@@ -47,11 +47,11 @@ def signoff_flow(ack, body, client):
     """
     Begin the signoff process when the "signoff" button is clicked
     """
-    command_flow.signoff_command(ack=ack, body=body, client=client)
+    command_flow.signoff_begin(ack=ack, body=body, client=client)
 
 @app.view("signoff-name-view")
-def signoff_name_submitted(ack, body, client, view):
-    command_flow.signoff_name_submitted(ack=ack, body=body, client=client, view=view)
+def signoff_show_jobs(ack, body, client, view):
+    command_flow.signoff_show_jobs(ack=ack, body=body, client=client, view=view)
 
 @app.view("signoff-confirm")
 def signoff_confirm(ack, body, client, view, say):

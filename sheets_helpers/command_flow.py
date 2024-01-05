@@ -93,7 +93,7 @@ class CommandFlow:
         self.channel_id = result["channel"]
         self.last_bot_timestamp = result["ts"]
 
-    def signoff_command(self, ack, body, client):
+    def signoff_begin(self, ack, body, client):
         """
         Provide a flow to signoff a housejob, opening new views as needed
         """
@@ -150,7 +150,7 @@ class CommandFlow:
     }
     )
         
-    def signoff_name_submitted(self, ack, body, client, view):
+    def signoff_show_jobs(self, ack, body, client, view):
         """
         Provide a view for matching jobs when a name has been matched
         """

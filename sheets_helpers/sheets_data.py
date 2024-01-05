@@ -133,9 +133,19 @@ class SheetsData:
     
     def signoff_job(self, signedoff_name, signedoffby_name, job_id):
         self._load_jobs_and_points()
+
+        # Update jobs
         jobs = self.get_jobs_by_name(signedoff_name)
         job = jobs[int(job_id)]
         job[4] = signedoffby_name
+
+        # Update scores
+        points = self.point_data.get("values", [])
+        for row in points:
+            if row[0] == signedoff_name: # Update signoff
+                row[1] = float(row[1]) + 1;
+            if row [0] == signedoffby_name: # Update ass ho
+                row[2] = float(row[1]) + 0.1;
 
         self._save_jobs_and_points()
     
