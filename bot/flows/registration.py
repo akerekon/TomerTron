@@ -7,6 +7,9 @@ def register_flow(ack, body, client):
     """
     Provide a flow to register a Slack account to a name
     """
+    # TODO: Only show brothers that have not been registered yet
+    # TODO: Allow a brother to disassociate their slack (new slack account, they screw up registration, the bot messes up, etc.)
+
     ack()
     all_brothers = sheets_data.all_brothers()
     brother_blocks = []
