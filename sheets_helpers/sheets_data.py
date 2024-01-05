@@ -152,7 +152,7 @@ class SheetsData:
         nicknames = self.nickname_data.get("values", [])
 
         for row in jobs:
-            if len(row) > 3:
+            if len(row) > 4 and row[4] == "E-SIGNOFF":
                 available[row[3]] = None
                 
         for row in nicknames:
