@@ -2,7 +2,7 @@ import os
 from bot import slack_app, sheets_data
 
 # Core routes
-@slack_app.command("/mess")
+@slack_app.command("/" + os.getenv("APP_NAME"))
 def tomertron_start_command(ack, command, respond):
     """
     Provide an interface for a user to select to...
