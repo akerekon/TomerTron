@@ -86,6 +86,10 @@ def register_flow(ack, body, client):
     """
     command_flow.register_command(ack=ack, body=body, client=client)
 
+@app.view("registration-view")
+def register_submitted(ack, body, client, view, say):
+    command_flow.register_submitted(ack=ack, body=body, client=client, view=view, say=say)
+
 @flask_app.route("/slack/events", methods=["POST"])
 def slack_events():
     """

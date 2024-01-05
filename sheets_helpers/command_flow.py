@@ -334,3 +334,5 @@ class CommandFlow:
                 }
             ]
         })
+    def register_submitted(self, ack, body, client, view, say):
+        print(view)
