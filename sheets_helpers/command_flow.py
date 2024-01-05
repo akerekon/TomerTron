@@ -81,6 +81,22 @@ class CommandFlow:
         self.last_bot_timestamp = result["ts"]
 
     def signoff_command(self, ack, body, client):
+        # Build the list of brothers to select from
+        available = self.sheets_data.available_signoffs();
+        brother_blocks = [];
+        for brother in available:
+            brother_blocks.append(
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": brother + (f" ({available[brother]})" if available[brother] is not None else ""),
+                        "emoji": True
+                    },
+                    "value": brother
+                }
+            );
+
+
         """
         Provide a flow to signoff a housejob, opening new views as needed
         """
@@ -103,17 +119,24 @@ class CommandFlow:
         "blocks": [
             {
                 "type": "input",
-                "block_id": "signoff-block",
                 "element": {
-                    "type": "plain_text_input",
-                    "action_id": "signoff-name"
+                    "type": "static_select",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "Select a brother/postulant",
+                        "emoji": True
+                    },
+                    "options": brother_blocks,
+                    "action_id": "static_select-action"
                 },
                 "label": {
                     "type": "plain_text",
                     "text": "Who are you signing off?",
+                    "emoji": True
                 }
             }
-	    ]}
+        ]
+    }
     )
     def signoff_name_submitted(self, ack, body, client, view):
         """
