@@ -1,5 +1,5 @@
 # TomerTron
-beep boop
+A bot that manages the house jobs for [Alpha Chi Rho Delta Sigma Phi](https://axpdsp.org/).
 
 Made by Andrew Kerekon (1162), Brendan Leu, ...
 
@@ -34,6 +34,8 @@ The events should go to `/slack/events`. For example, if you are using a port fo
 Refer to [this guide](https://developers.google.com/sheets/api/quickstart/python).
 
 Place `credentials.json` in this directory. Run the bot and the first time a request to Google Sheets is made, you will see a sign in link in the console. Click it and sign in with Google, then `token.json` should appear.
+
+The ID of the Google Sheet to be used is in `bot/sheets_data.py` in a variable called `SPREADSHEET_ID`.
 
 # Running
 ## To run in production
