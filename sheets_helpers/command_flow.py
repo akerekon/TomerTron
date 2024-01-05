@@ -142,9 +142,8 @@ class CommandFlow:
         """
         Provide a view for matching jobs when a name has been matched
         """
-        print(view)
-        input_name = view['state']['values']['signoff-block']['signoff-name']['value']
-        matched_name = self.sheets_data.match_closest_name(input_name)
+        signoff_block_id = view['blocks'][0]['block_id']
+        matched_name = view['state']['values'][signoff_block_id]['signoff-block']['selected_option']['value']
         jobs = self.sheets_data.get_jobs_by_name(matched_name)
 
         if len(jobs) == 0:
