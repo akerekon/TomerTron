@@ -96,9 +96,10 @@ def register_submitted(ack, body, client, view, say):
     
     if is_other_user:
         select_other_user_view = {
+            "callback_id": "other-user-confirm",
             "title": {
                 "type": "plain_text",
-                "text": "Register Another User"
+                "text": "Register Someone Else"
             },
             "submit": {
                 "type": "plain_text",
@@ -114,13 +115,13 @@ def register_submitted(ack, body, client, view, say):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "House Manager other user registration"
+                        "text": "Which account matches " + matched_name + "?"
                     },
                     "accessory": {
                         "type": "users_select",
                         "placeholder": {
                             "type": "plain_text",
-                            "text": "Which account matches " + matched_name + "?"
+                            "text": "Accounts"
                         },
                         "action_id": "other-user-select"
                     }
@@ -140,8 +141,13 @@ def register_submitted(ack, body, client, view, say):
         say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
 
 @slack_app.action("other-user-select")
-def register_other_user(ack):
+def register_other_user_select(ack):
     """
-    Acknowledge, but do not take any action when registering another user
+    Acknowledge, but do not take any action when clicking the register another user checkbox
     """
     ack()
+@slack_app.action("other-user-confirm")
+def register_other_user_confirm(ack, body, view, say):
+    ack()
+    print(view)
+    print(body)
