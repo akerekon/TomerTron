@@ -85,6 +85,8 @@ def register_submitted(ack, body, client, view, say):
     """
     ack()
 
+    registration_block_id = view['blocks'][0]['block_id']
+    matched_name = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
     other_user_checkbox = view["state"]["values"]["other-user-block"]["other-user"]['selected_options']
     is_other_user = False
 
@@ -96,11 +98,11 @@ def register_submitted(ack, body, client, view, say):
         select_other_user_view = {
             "title": {
                 "type": "plain_text",
-                "text": "Who are you?"
+                "text": "Register Another User"
             },
             "submit": {
                 "type": "plain_text",
-                "text": "Submit"
+                "text": "Register"
             },
             "type": "modal",
             "close": {
@@ -112,23 +114,21 @@ def register_submitted(ack, body, client, view, say):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Test block with users select"
+                        "text": "House Manager other user registration"
                     },
                     "accessory": {
                         "type": "users_select",
                         "placeholder": {
                             "type": "plain_text",
-                            "text": "Select a user"
+                            "text": "Which account matches " + matched_name + "?"
                         },
-                        "action_id": "users_select-action"
+                        "action_id": "other-user-select"
                     }
                 }
             ]
         }
         ack(response_action="update", view=select_other_user_view)
     else:
-        registration_block_id = view['blocks'][0]['block_id']
-        matched_name = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
         user_slack_id = body['user']['id']
 
         con = sqlite3.connect("find_name_from_slack_id.db")
@@ -138,3 +138,10 @@ def register_submitted(ack, body, client, view, say):
         con.close()
 
         say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
+
+@slack_app.action("other-user-select")
+def register_other_user(ack):
+    """
+    Acknowledge, but do not take any action when registering another user
+    """
+    ack()
