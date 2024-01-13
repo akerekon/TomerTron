@@ -55,6 +55,25 @@ def register_flow(ack, body, client):
                     "type": "plain_text",
                     "text": "What is your name?",
                 }
+            },
+            {
+                "type": "actions",
+                "block_id": "other-user-block",
+                "elements": [
+                    {
+                        "type": "checkboxes",
+                        "options": [
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Are you registering someone else?"
+                                },
+                                "value": "other"
+                            }
+                        ],
+                        "action_id": "other-user"
+                    }
+                ]
             }
         ]
     })
@@ -66,14 +85,56 @@ def register_submitted(ack, body, client, view, say):
     """
     ack()
 
-    registration_block_id = view['blocks'][0]['block_id']
-    matched_name = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
-    user_slack_id = body['user']['id']
+    other_user_checkbox = view["state"]["values"]["other-user-block"]["other-user"]['selected_options']
+    is_other_user = False
 
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-    cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
-    con.commit()
-    con.close()
+    for option in other_user_checkbox:
+        if (option['value'] == "other"):
+            is_other_user = True
+    
+    if is_other_user:
+        select_other_user_view = {
+            "title": {
+                "type": "plain_text",
+                "text": "Who are you?"
+            },
+            "submit": {
+                "type": "plain_text",
+                "text": "Submit"
+            },
+            "type": "modal",
+            "close": {
+                "type": "plain_text",
+                "text": "Cancel"
+            },
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Test block with users select"
+                    },
+                    "accessory": {
+                        "type": "users_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Select a user"
+                        },
+                        "action_id": "users_select-action"
+                    }
+                }
+            ]
+        }
+        ack(response_action="update", view=select_other_user_view)
+    else:
+        registration_block_id = view['blocks'][0]['block_id']
+        matched_name = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
+        user_slack_id = body['user']['id']
 
-    say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
+        con = sqlite3.connect("find_name_from_slack_id.db")
+        cur = con.cursor()
+        cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
+        con.commit()
+        con.close()
+
+        say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
