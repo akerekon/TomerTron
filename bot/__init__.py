@@ -3,6 +3,7 @@ app.py is the main module, used to receive incoming Slack requests
 """
 
 import os
+import time
 import sqlite3
 
 from dotenv import load_dotenv
@@ -55,3 +56,8 @@ def slack_events():
     Pass all requests under the path /slack/events to the events above
     """
     return handler.handle(request)
+
+while True:
+    #Refresh the spreadsheet's token every 12 hours
+    sheets_data.refresh_token()
+    time.sleep(43200)

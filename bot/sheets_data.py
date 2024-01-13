@@ -29,6 +29,9 @@ class SheetsData:
     point_data = []
     nickname_data = []
 
+    def refresh_token(self):
+        self._get_spreadsheet()
+
     def _get_spreadsheet(self):
         """
         Get the house job points spreadsheet using our access credentials
