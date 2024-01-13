@@ -60,5 +60,5 @@ def slack_events():
 
 #Refresh the spreadsheet's token every 12 hours
 scheduler = BackgroundScheduler()
-scheduler.add_job(sheets_data.refresh_token(), 'interval', hours=12)
+scheduler.add_job(sheets_data.refresh_token, 'interval', hours=12)
 scheduler.start()
