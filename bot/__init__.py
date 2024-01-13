@@ -6,6 +6,7 @@ import os
 import time
 import sqlite3
 
+from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
 from flask import Flask, request
 from slack_bolt import App
@@ -57,7 +58,7 @@ def slack_events():
     """
     return handler.handle(request)
 
-while True:
-    #Refresh the spreadsheet's token every 12 hours
-    sheets_data.refresh_token()
-    time.sleep(43200)
+#Refresh the spreadsheet's token every 12 hours
+scheduler = BackgroundScheduler()
+scheduler.add_job(sheets_data.refresh_token(), 'interval', hours=12)
+scheduler.start()
