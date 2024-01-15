@@ -25,7 +25,7 @@ SERVER_PORT="3000" # The port to run the server on
 ```
 
 ## Setting up Slack
-Refer to [this guide](https://developers.google.com/sheets/api/quickstart/python).
+Refer to [this guide](https://slack.dev/bolt-python/tutorial/getting-started-http).
 
 The events should go to `/slack/events`. For example, if you are using a port forwarding service such as [ngrok](https://ngrok.com/download) it would look something like: `https://example.ngrok-free.app/slack/events`
 
