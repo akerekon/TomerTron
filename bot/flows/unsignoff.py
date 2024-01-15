@@ -3,10 +3,8 @@ import os
 
 from bot import slack_app, sheets_data
 
-# TODO: Fix (notify user) when there are no jobs to un-sign off (maybe look at "No Jobs Found!" modal)
-
 @slack_app.action("unsignoff")
-def unsignoff_flow(ack, body, client):
+def unsignoff_flow(ack, body, client, respond):
     """
     Provide a flow to unsignoff a housejob, opening new views as needed
     """
@@ -25,41 +23,46 @@ def unsignoff_flow(ack, body, client):
                 "value": brother
             }
         )
-        
-    client.views_open(trigger_id=body["trigger_id"], view={
-        "type": "modal",
-        "callback_id": "unsignoff-show-jobs",
-        "title": {
-            "type": "plain_text",
-            "text": "Un-signoff a House Job"
-        },
-        "submit": {
-            "type": "plain_text",
-            "text": "Confirm Name"
-        },
-        "close": {
-            "type": "plain_text",
-            "text": "Cancel"
-        },
-        "blocks": [
-            {
-                "type": "input",
-                "element": {
-                    "type": "static_select",
-                    "placeholder": {
-                        "type": "plain_text",
-                        "text": "Select a brother/postulant",
+
+    # If there are no jobs to un-sign off notify the user!
+    if len(brother_blocks) == 0:
+        respond(text="There are no jobs that can be un-signed off!", replace_original=False)
+    else:
+    # Build the buttons
+        client.views_open(trigger_id=body["trigger_id"], view={
+            "type": "modal",
+            "callback_id": "unsignoff-show-jobs",
+            "title": {
+                "type": "plain_text",
+                "text": "Un-signoff a House Job"
+            },
+            "submit": {
+                "type": "plain_text",
+                "text": "Confirm Name"
+            },
+            "close": {
+                "type": "plain_text",
+                "text": "Cancel"
+            },
+            "blocks": [
+                {
+                    "type": "input",
+                    "element": {
+                        "type": "static_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Select a brother/postulant",
+                        },
+                        "options": brother_blocks,
+                        "action_id": "unsignoff-block"
                     },
-                    "options": brother_blocks,
-                    "action_id": "unsignoff-block"
-                },
-                "label": {
-                    "type": "plain_text",
-                    "text": "Who are you signing off?"
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Who are you un-signing off?"
+                    }
                 }
-            }
-        ]
-    })
+            ]
+        })
 
 @slack_app.view("unsignoff-show-jobs")
 def unsignoff_show_jobs(ack, body, client, view):

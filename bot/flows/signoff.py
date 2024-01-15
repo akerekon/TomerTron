@@ -3,10 +3,8 @@ import os
 
 from bot import slack_app, sheets_data
 
-# TODO: Fix (notify user) when there are no jobs to sign off (maybe look at "No Jobs Found!" modal)
-
 @slack_app.action("signoff")
-def signoff_flow(ack, body, client):
+def signoff_flow(ack, body, client, respond):
     """
     Provide a flow to signoff a housejob, opening new views as needed
     """
@@ -25,41 +23,46 @@ def signoff_flow(ack, body, client):
                 "value": brother
             }
         )
-        
-    client.views_open(trigger_id=body["trigger_id"], view={
-        "type": "modal",
-        "callback_id": "signoff-show-jobs",
-        "title": {
-            "type": "plain_text",
-            "text": "Signoff a House Job"
-        },
-        "submit": {
-            "type": "plain_text",
-            "text": "Confirm Name"
-        },
-        "close": {
-            "type": "plain_text",
-            "text": "Cancel"
-        },
-        "blocks": [
-            {
-                "type": "input",
-                "element": {
-                    "type": "static_select",
-                    "placeholder": {
-                        "type": "plain_text",
-                        "text": "Select a brother/postulant",
+
+    # If there are no jobs to sign off notify the user!
+    if len(brother_blocks) == 0:
+        respond(text="There are no jobs that can be signed off!", replace_original=False)
+    else:
+    # Build the buttons
+        client.views_open(trigger_id=body["trigger_id"], view={
+            "type": "modal",
+            "callback_id": "signoff-show-jobs",
+            "title": {
+                "type": "plain_text",
+                "text": "Signoff a House Job"
+            },
+            "submit": {
+                "type": "plain_text",
+                "text": "Confirm Name"
+            },
+            "close": {
+                "type": "plain_text",
+                "text": "Cancel"
+            },
+            "blocks": [
+                {
+                    "type": "input",
+                    "element": {
+                        "type": "static_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Select a brother/postulant",
+                        },
+                        "options": brother_blocks,
+                        "action_id": "signoff-block"
                     },
-                    "options": brother_blocks,
-                    "action_id": "signoff-block"
-                },
-                "label": {
-                    "type": "plain_text",
-                    "text": "Who are you signing off?"
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Who are you signing off?"
+                    }
                 }
-            }
-        ]
-    })
+            ]
+        })
 
 @slack_app.view("signoff-show-jobs")
 def signoff_show_jobs(ack, body, client, view):
@@ -185,7 +188,6 @@ def signoff_confirm(ack, body, client, view, say):
     job_id = view["state"]["values"]["job-block"]["signoff-job-option"]["selected_option"]["value"].split("-")[1]
 
     # Get checkbox info
-    # TODO: What is the bonus column? Should we add stuff for it?
     job_checkboxes = view["state"]["values"]["info-block"]["signoff-job-checkboxes"]['selected_options']
     is_late = False
 

@@ -43,6 +43,8 @@ import bot.flows.signoff
 import bot.flows.unsignoff
 import bot.flows.reassign
 import bot.flows.registration
+import bot.flows.slash_register
+import bot.flows.slash_unregister
 
 @slack_app.event("message")
 def handle_message():
