@@ -7,22 +7,35 @@ def register_flow(ack, body, client):
     """
     Provide a flow to register a Slack account to a name
     """
-    # TODO: Only show brothers that have not been registered yet
-    # TODO: Allow a brother to disassociate their slack (new slack account, they screw up registration, the bot messes up, etc.)
-
     ack()
+
+    # Get the current slack connections
+    con = sqlite3.connect("find_name_from_slack_id.db")
+    cur = con.cursor()
+    slack_connections = cur.execute("SELECT name FROM slack_id").fetchall()
+    con.close()
+
+    # Make list of the names of brothers with a connected Slack
+    brothers_with_slack = []
+    for connection in slack_connections:
+        brothers_with_slack.append(connection[0])
+
+    # Make blocks for the non-registered brothers
     all_brothers = sheets_data.all_brothers()
     brother_blocks = []
     for brother in all_brothers:
-        brother_blocks.append(
-            {
-                "text": {
-                    "type": "plain_text",
-                    "text": brother,
-                },
-                "value": brother
-            }
-        )
+        if brother not in brothers_with_slack:
+            brother_blocks.append(
+                {
+                    "text": {
+                        "type": "plain_text",
+                        "text": brother,
+                    },
+                    "value": brother
+                }
+            )
+
+    # Open the view
     client.views_open(trigger_id=body["trigger_id"], view={
         "type": "modal",
         "callback_id": "registration-view",

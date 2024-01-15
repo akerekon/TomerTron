@@ -71,6 +71,19 @@ def tomertron_start_command(ack, command, respond):
                     "action_id": "register"
                 }
             ]
+        },
+        {
+            "type": "actions",
+            "elements": [
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Un-register an Account"
+                    },
+                    "action_id": "unregister"
+                }
+            ]
         }
     ]
 
