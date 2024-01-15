@@ -58,7 +58,7 @@ def unsignoff_flow(ack, body, client, respond):
                     },
                     "label": {
                         "type": "plain_text",
-                        "text": "Who are you signing off?"
+                        "text": "Who are you un-signing off?"
                     }
                 }
             ]
