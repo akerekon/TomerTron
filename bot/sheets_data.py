@@ -24,6 +24,7 @@ class SheetsData:
 
     signoff_points = 2
     signoff_ho_man_points = 0.1
+    signoff_not_done_name = "E-SIGNOFF"
 
     job_data = []
     point_data = []
@@ -134,14 +135,12 @@ class SheetsData:
                 row[1] = float(row[1]) - self.signoff_points
             if row [0] == job[4]: # Update ass ho
                 row[2] = float(row[2]) - self.signoff_ho_man_points
-        
-        # TODO: Not sure how ho man points work, seems fair to remove the 0.1 from the previous sign-off and maybe give the points to the new one who delt with it?
 
         # Update lateness
         job[5] = "n"
 
         # Update job sheet
-        job[4] = "E-SIGNOFF"
+        job[4] = self.signoff_not_done_name
         self._save_jobs_and_points()
     
     def all_brothers(self):
@@ -164,7 +163,7 @@ class SheetsData:
         nicknames = self.nickname_data.get("values", [])
 
         for row in jobs:
-            if len(row) > 4 and (row[4] == "E-SIGNOFF") ^ unsignoff:
+            if len(row) > 4 and (row[4] == self.signoff_not_done_name) ^ unsignoff:
                 available[row[3]] = None
                 
         for row in nicknames:
