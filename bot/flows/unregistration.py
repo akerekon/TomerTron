@@ -78,7 +78,7 @@ def unregister_submitted(ack, view, say):
 
     con = sqlite3.connect("find_name_from_slack_id.db")
     cur = con.cursor()
-    cur.execute("DELETE FROM slack_id WHERE name='" + matched_name)
+    cur.execute("DELETE FROM slack_id WHERE name=" + matched_name)
     con.commit()
     con.close()
 
