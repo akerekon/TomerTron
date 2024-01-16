@@ -58,7 +58,7 @@ def register_flow(ack, body, client):
                     "type": "static_select",
                     "placeholder": {
                         "type": "plain_text",
-                        "text": "Select your Slack account",
+                        "text": "Select name to register",
                         "emoji": True
                     },
                     "options": brother_blocks,
@@ -66,20 +66,20 @@ def register_flow(ack, body, client):
                 },
                 "label": {
                     "type": "plain_text",
-                    "text": "Which Slack account are you registering?",
+                    "text": "Who are you registering?",
                 }
             },
             {
                     "type": "section",
-                    "text": {
+                    "label": {
                         "type": "mrkdwn",
-                        "text": "Which Brother is this?"
+                        "text": "Which Slack account is theirs?"
                     },
-                    "accessory": {
+                    "element": {
                         "type": "users_select",
                         "placeholder": {
                             "type": "plain_text",
-                            "text": "Accounts"
+                            "text": "Select Slack account to register"
                         },
                         "action_id": "other-user-select"
                     }
