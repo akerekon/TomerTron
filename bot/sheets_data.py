@@ -171,4 +171,20 @@ class SheetsData:
                 available[row[0]] = row[1]
 
         return dict(sorted(available.items()))
+    
+    def reset_points(self):
+        self._load_jobs_and_points()
+        jobs = self.job_data.get("values", [])
+        points = self.point_data.get("values", [])
+
+        for job_row in jobs:
+            if len(job_row) > 0:
+                user_name = job_row[3]
+                for point_row in points[1:]:
+                    if len(point_row) > 0:
+                        if point_row[0] == user_name:
+                            point_row[1] = float(point_row[1]) - 1.0
+        self._save_jobs_and_points()
+
+
 
