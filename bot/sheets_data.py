@@ -204,6 +204,10 @@ class SheetsData:
                     if len(point_row) > 0:
                         if point_row[0] == user_name:
                             point_row[1] = float(point_row[1]) - 1.0
+                            break
+        for point_row in points[1:]:
+            if len(point_row) > 0:
+                point_row[2] = float(0.0)
         self._save_jobs_and_points()
 
 
