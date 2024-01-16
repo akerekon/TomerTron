@@ -77,18 +77,18 @@ def register_flow(ack, body, client):
                             "type": "plain_text",
                             "text": "Select Slack account to register"
                         },
-                        "action_id": "other-user-select"
+                        "action_id": "slack-id-select"
                     },
                     "label": {
                         "type": "plain_text",
-                        "text": "Which Slack account is theirs?"
+                        "text": "Which Slack account is tied to this name?"
                     }
                 }
         ]
     })
 
 @slack_app.view("registration-view")
-def register_submitted(ack, body, client, view, say):
+def register_submitted(ack, body, client, view, say, respond):
     """
     Send the user a DM when they have successfully registered their account
     """
@@ -96,19 +96,19 @@ def register_submitted(ack, body, client, view, say):
 
     print(view)
 
-    registration_block_id = view['blocks'][0]['block_id']
-    matched_name = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
-    user_slack_id = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
+    name_block_id = view['blocks'][0]['block_id']
+    slack_block_id = view['blocks'][1]['block_id']
+    matched_name = view['state']['values'][name_block_id]['registration-block']['selected_option']['value']
+    user_slack_id = view['state']['values'][slack_block_id]['slack-id-select']['selected_user']
 
-    print(view)
+    con = sqlite3.connect("find_name_from_slack_id.db")
+    cur = con.cursor()
+    cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
+    con.commit()
+    con.close()
 
-    #con = sqlite3.connect("find_name_from_slack_id.db")
-    #cur = con.cursor()
-    #cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
-    #con.commit()
-    #con.close()
-
-    #say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
+    respond("Registered " + matched_name + " to the account " + user_slack_id)
+    say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
 
 @slack_app.action("other-user-select")
 def register_other_user_select(ack):
