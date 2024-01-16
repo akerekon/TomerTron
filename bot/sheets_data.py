@@ -104,7 +104,7 @@ class SheetsData:
         points = self.point_data.get("values", [])
         for row in points:
             if row[0] == signedoff_name: # Update signoff
-                row[1] = float(row[1]) + config.SIGNOFF_POINTS
+                row[1] = float(row[1]) + config.SIGNOFF_BASE_POINTS + (config.SIGNOFF_LATE_AMOUNT if is_late else config.SIGNOFF_ADD_POINTS)
             if row [0] == signedoffby_name: # Update ass ho
                 row[2] = float(row[2]) + config.SIGNOFF_ASSHO_POINTS
 
@@ -119,12 +119,13 @@ class SheetsData:
         # Get job
         jobs = self.get_jobs_by_name(unsignedoff_name)
         job = jobs[int(job_id)]
+        is_late = job[5] == "y"
 
         # Update scores
         points = self.point_data.get("values", [])
         for row in points:
             if row[0] == unsignedoff_name: # Update signoff
-                row[1] = float(row[1]) - config.SIGNOFF_POINTS
+                row[1] = float(row[1]) - config.SIGNOFF_BASE_POINTS - (config.SIGNOFF_LATE_AMOUNT if is_late else config.SIGNOFF_ADD_POINTS)
             if row [0] == job[4]: # Update ass ho
                 row[2] = float(row[2]) - config.SIGNOFF_ASSHO_POINTS
 
@@ -198,10 +199,11 @@ class SheetsData:
             if len(job_row) > 0:
                 user_name = job_row[3]
                 job_row[4] = config.SIGNOFF_NOT_DONE_STRING
+                job_row[5] = "n"
                 for point_row in points[1:]:
                     if len(point_row) > 0:
                         if point_row[0] == user_name:
-                            point_row[1] = float(point_row[1]) - 1.0
+                            point_row[1] = float(point_row[1]) - config.SIGNOFF_BASE_POINTS
                             break
         self._save_jobs_and_points()
 
@@ -220,6 +222,8 @@ class SheetsData:
         return matching_jobs
 
     def swap_job(self, swapped_name, job_id):
+        """
+        """
         self._load_jobs_and_points()
 
         # Update jobs
