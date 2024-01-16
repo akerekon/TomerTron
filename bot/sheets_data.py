@@ -10,21 +10,13 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+import config
+
 class SheetsData:
     """
     Provide a static class that will hold data about jobs and points and make API calls
     """
     SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-
-    SPREADSHEET_ID = "1EPY4FXw_K87VMz0MpMEFh5JWgdLMilBnudYXqhMr2-g"
-
-    JOB_RANGE = "House_Jobs!A2:G256"
-    POINT_RANGE = "Week_Scores!A1:F256"
-    NICKNAME_RANGE = "Nicknames"
-
-    signoff_points = 2
-    signoff_ho_man_points = 0.1
-    signoff_not_done_name = "E-SIGNOFF"
 
     job_data = []
     point_data = []
@@ -64,19 +56,19 @@ class SheetsData:
         sheet = self._get_spreadsheet()
         self.job_data = (
             sheet.values()
-            .get(spreadsheetId=self.SPREADSHEET_ID, range=self.JOB_RANGE)
+            .get(spreadsheetId=config.SPREADSHEET_ID, range=config.JOB_RANGE)
             .execute()
         )
 
         self.point_data = (
             sheet.values()
-            .get(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE)
+            .get(spreadsheetId=config.SPREADSHEET_ID, range=config.POINT_RANGE)
             .execute()
         )
 
         self.nickname_data = (
             sheet.values()
-            .get(spreadsheetId=self.SPREADSHEET_ID, range=self.NICKNAME_RANGE)
+            .get(spreadsheetId=config.SPREADSHEET_ID, range=config.NICKNAME_RANGE)
             .execute()
         )
 
@@ -85,8 +77,8 @@ class SheetsData:
         Save data for house jobs and points to the spreadsheet
         """
         sheet = self._get_spreadsheet()
-        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.JOB_RANGE, body=self.job_data, valueInputOption="USER_ENTERED").execute()
-        sheet.values().update(spreadsheetId=self.SPREADSHEET_ID, range=self.POINT_RANGE, body=self.point_data, valueInputOption="USER_ENTERED").execute()
+        sheet.values().update(spreadsheetId=config.SPREADSHEET_ID, range=config.JOB_RANGE, body=self.job_data, valueInputOption="USER_ENTERED").execute()
+        sheet.values().update(spreadsheetId=config.SPREADSHEET_ID, range=config.POINT_RANGE, body=self.point_data, valueInputOption="USER_ENTERED").execute()
     
     def get_jobs_by_name(self, name):
         """
@@ -112,9 +104,9 @@ class SheetsData:
         points = self.point_data.get("values", [])
         for row in points:
             if row[0] == signedoff_name: # Update signoff
-                row[1] = float(row[1]) + self.signoff_points
+                row[1] = float(row[1]) + config.SIGNOFF_POINTS
             if row [0] == signedoffby_name: # Update ass ho
-                row[2] = float(row[2]) + self.signoff_ho_man_points
+                row[2] = float(row[2]) + config.SIGNOFF_ASSHO_POINTS
 
         # Is late
         job[5] = "y" if is_late else "n"
@@ -132,9 +124,9 @@ class SheetsData:
         points = self.point_data.get("values", [])
         for row in points:
             if row[0] == unsignedoff_name: # Update signoff
-                row[1] = float(row[1]) - self.signoff_points
+                row[1] = float(row[1]) - config.SIGNOFF_POINTS
             if row [0] == job[4]: # Update ass ho
-                row[2] = float(row[2]) - self.signoff_ho_man_points
+                row[2] = float(row[2]) - config.SIGNOFF_ASSHO_POINTS
 
         # Update lateness
         job[5] = "n"
@@ -183,7 +175,7 @@ class SheetsData:
         nicknames = self.nickname_data.get("values", [])
 
         for row in jobs:
-            if len(row) > 4 and (row[4] == self.signoff_not_done_name) ^ unsignoff:
+            if len(row) > 4 and (row[4] == config.SIGNOFF_NOT_DONE_STRING) ^ unsignoff:
                 available[row[3]] = None
                 
         for row in nicknames:
@@ -201,7 +193,7 @@ class SheetsData:
 
         matching_jobs = []
         for row in jobs:
-            if len(row) > 4 and (row[4] == self.signoff_not_done_name):
+            if len(row) > 4 and (row[4] == config.SIGNOFF_NOT_DONE_STRING):
                     matching_jobs.append(row)
         return matching_jobs
 
