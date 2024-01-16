@@ -74,7 +74,7 @@ def unregister_submitted(ack, view, say):
     ack()
 
     name_block_id = view['blocks'][0]['block_id']
-    matched_name = view['state']['values'][name_block_id]['registration-block']['selected_option']['value']
+    matched_name = view['state']['values'][name_block_id]['unregistration-block']['selected_option']['value']
 
     con = sqlite3.connect("find_name_from_slack_id.db")
     cur = con.cursor()
