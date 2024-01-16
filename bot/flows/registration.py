@@ -80,7 +80,7 @@ def register_flow(ack, body, client):
                         "action_id": "other-user-select"
                     },
                     "label": {
-                        "type": "mrkdwn",
+                        "type": "plain_text",
                         "text": "Which Slack account is theirs?"
                     }
                 }
