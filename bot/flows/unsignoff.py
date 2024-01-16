@@ -1,9 +1,7 @@
 import sqlite3
 import os
 
-from bot import slack_app, sheets_data
-
-import config
+from bot import slack_app, sheets_data, config
 
 @slack_app.action("unsignoff")
 def unsignoff_flow(ack, body, client, respond):
