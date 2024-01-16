@@ -102,11 +102,11 @@ def register_submitted(ack, body, client, view, say):
 
     print(view)
 
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-    cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
-    con.commit()
-    con.close()
+    #con = sqlite3.connect("find_name_from_slack_id.db")
+    #cur = con.cursor()
+    #cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
+    #con.commit()
+    #con.close()
 
     #say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
 
