@@ -70,11 +70,7 @@ def register_flow(ack, body, client):
                 }
             },
             {
-                    "type": "section",
-                    "label": {
-                        "type": "mrkdwn",
-                        "text": "Which Slack account is theirs?"
-                    },
+                    "type": "input",
                     "element": {
                         "type": "users_select",
                         "placeholder": {
@@ -82,6 +78,10 @@ def register_flow(ack, body, client):
                             "text": "Select Slack account to register"
                         },
                         "action_id": "other-user-select"
+                    },
+                    "label": {
+                        "type": "mrkdwn",
+                        "text": "Which Slack account is theirs?"
                     }
                 }
         ]
