@@ -78,8 +78,10 @@ def unregister_submitted(ack, view, say):
 
     con = sqlite3.connect("find_name_from_slack_id.db")
     cur = con.cursor()
+    user_slack_id = cur.execute("SELECT slack_id FROM slack_id WHERE name LIKE '%" + matched_name + "%'").fetchone()
     cur.execute("DELETE FROM slack_id WHERE name LIKE '%" + matched_name + "%'")
     con.commit()
     con.close()
 
+    say(channel=user_slack_id[0], text="Your Slack account is no longer tied to " + matched_name + "! If you feel this is in error, contact the House Manager.")
     say(channel=os.getenv("CHANNEL_ID"), text="Successfully unregistered " + matched_name)
