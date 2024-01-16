@@ -132,7 +132,7 @@ class SheetsData:
         job[5] = "n"
 
         # Update job sheet
-        job[4] = self.signoff_not_done_name
+        job[4] = config.SIGNOFF_NOT_DONE_STRING
         self._save_jobs_and_points()
     
     def all_brothers(self):
@@ -197,6 +197,7 @@ class SheetsData:
         for job_row in jobs:
             if len(job_row) > 0:
                 user_name = job_row[3]
+                job_row[4] = config.SIGNOFF_NOT_DONE_STRING
                 for point_row in points[1:]:
                     if len(point_row) > 0:
                         if point_row[0] == user_name:
@@ -215,7 +216,7 @@ class SheetsData:
         matching_jobs = []
         for row in jobs:
             if len(row) > 4 and (row[4] == config.SIGNOFF_NOT_DONE_STRING):
-                    matching_jobs.append(row)
+                matching_jobs.append(row)
         return matching_jobs
 
     def swap_job(self, swapped_name, job_id):
