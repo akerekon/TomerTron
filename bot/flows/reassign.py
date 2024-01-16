@@ -116,18 +116,9 @@ def reassign_submit(ack, body, client, view, say, context, payload):
     job = selected_job[2]
     job_id = selected_job[0]
 
-    # Send message
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-    res = cur.execute(f"SELECT name FROM slack_id WHERE slack_id=\"{asshoman_id}\"")
-    matched_name = res.fetchone()
-    if matched_name is None:
-        say(channel=os.getenv("CHANNEL_ID"), text=f"<@{asshoman_id}>, please first register your account!")
-    else:
-        # Sign off the person
-        sheets_data.swap_job(swapped_name, job_id)
-        say(channel=os.getenv("CHANNEL_ID"), text=f"<@{asshoman_id}> gave {original_name}'s `{job}` job to {swapped_name}")
-    con.close()
+    # Swap and send message
+    sheets_data.swap_job(swapped_name, job_id)
+    say(channel=os.getenv("CHANNEL_ID"), text=f"<@{asshoman_id}> gave {original_name}'s `{job}` job to {swapped_name}")
 
 @slack_app.action("reassign-option-jobs")
 def signoff_job_option(ack):

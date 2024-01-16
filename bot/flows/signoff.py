@@ -2,6 +2,7 @@ import sqlite3
 import os
 
 from bot import slack_app, sheets_data
+import config
 
 @slack_app.action("signoff")
 def signoff_flow(ack, body, client, respond):
@@ -103,7 +104,7 @@ def signoff_show_jobs(ack, body, client, view):
             where = job[1]
             what = job[0]
 
-            if job[4] == "E-SIGNOFF":
+            if job[4] == config.SIGNOFF_NOT_DONE_STRING:
                 job_json_builder.append({
                     "text": {
                         "type": "plain_text",
