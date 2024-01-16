@@ -41,11 +41,11 @@ def register_flow(ack, body, client):
         "callback_id": "registration-view",
         "title": {
             "type": "plain_text",
-            "text": "What is your name?"
+            "text": "Register Account"
         },
         "submit": {
             "type": "plain_text",
-            "text": "Confirm Name"
+            "text": "Confirm Registration"
         },
         "close": {
             "type": "plain_text",
@@ -99,6 +99,8 @@ def register_submitted(ack, body, client, view, say):
     registration_block_id = view['blocks'][0]['block_id']
     matched_name = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
     user_slack_id = view['state']['values'][registration_block_id]['registration-block']['selected_option']['value']
+
+    print(view)
 
     con = sqlite3.connect("find_name_from_slack_id.db")
     cur = con.cursor()
