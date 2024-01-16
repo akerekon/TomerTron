@@ -4,7 +4,7 @@ import os
 from bot import slack_app, sheets_data
 
 @slack_app.action("unregister")
-def unregister_flow(ack, body, client):
+def unregister_flow(ack, body, client, respond):
     """
     Provide a flow to unregister a user
     """
@@ -28,44 +28,46 @@ def unregister_flow(ack, body, client):
                     "value": connection[0]
                 }
             )
-            
-
-    # Open the view
-    client.views_open(trigger_id=body["trigger_id"], view={
-        "type": "modal",
-        "callback_id": "unregistration-view",
-        "title": {
-            "type": "plain_text",
-            "text": "Unregister Account"
-        },
-        "submit": {
-            "type": "plain_text",
-            "text": "Confirm Unregistration"
-        },
-        "close": {
-            "type": "plain_text",
-            "text": "Cancel"
-        },
-        "blocks": [
-            {
-                "type": "input",
-                "element": {
-                    "type": "static_select",
-                    "placeholder": {
-                        "type": "plain_text",
-                        "text": "Select name to unregister",
-                        "emoji": True
-                    },
-                    "options": brother_blocks,
-                    "action_id": "unregistration-block"
-                },
-                "label": {
-                    "type": "plain_text",
-                    "text": "Who are you unregistering?",
-                }
+        
+    if not brother_blocks:
+        respond("There are no accounts registered!")
+    else:
+        # Open the view
+        client.views_open(trigger_id=body["trigger_id"], view={
+            "type": "modal",
+            "callback_id": "unregistration-view",
+            "title": {
+                "type": "plain_text",
+                "text": "Unregister Account"
             },
-        ]
-    })
+            "submit": {
+                "type": "plain_text",
+                "text": "Confirm Unregistration"
+            },
+            "close": {
+                "type": "plain_text",
+                "text": "Cancel"
+            },
+            "blocks": [
+                {
+                    "type": "input",
+                    "element": {
+                        "type": "static_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Select name to unregister",
+                            "emoji": True
+                        },
+                        "options": brother_blocks,
+                        "action_id": "unregistration-block"
+                    },
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Who are you unregistering?",
+                    }
+                },
+            ]
+        })
 @slack_app.view("unregistration-view")
 def unregister_submitted(ack, view, say):
     """

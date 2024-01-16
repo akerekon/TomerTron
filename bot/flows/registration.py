@@ -4,7 +4,7 @@ import sqlite3
 from bot import slack_app, sheets_data
 
 @slack_app.action("register")
-def register_flow(ack, body, client):
+def register_flow(ack, body, client, respond):
     """
     Provide a flow to register a Slack account to a name
     """
@@ -36,57 +36,60 @@ def register_flow(ack, body, client):
                 }
             )
 
-    # Open the view
-    client.views_open(trigger_id=body["trigger_id"], view={
-        "type": "modal",
-        "callback_id": "registration-view",
-        "title": {
-            "type": "plain_text",
-            "text": "Register Account"
-        },
-        "submit": {
-            "type": "plain_text",
-            "text": "Confirm Registration"
-        },
-        "close": {
-            "type": "plain_text",
-            "text": "Cancel"
-        },
-        "blocks": [
-            {
-                "type": "input",
-                "element": {
-                    "type": "static_select",
-                    "placeholder": {
-                        "type": "plain_text",
-                        "text": "Select name to register",
-                        "emoji": True
-                    },
-                    "options": brother_blocks,
-                    "action_id": "registration-block"
-                },
-                "label": {
-                    "type": "plain_text",
-                    "text": "Who are you registering?",
-                }
+    if not brother_blocks:
+        respond("All accounts are registered!")
+    else:
+        # Open the view
+        client.views_open(trigger_id=body["trigger_id"], view={
+            "type": "modal",
+            "callback_id": "registration-view",
+            "title": {
+                "type": "plain_text",
+                "text": "Register Account"
             },
-            {
+            "submit": {
+                "type": "plain_text",
+                "text": "Confirm Registration"
+            },
+            "close": {
+                "type": "plain_text",
+                "text": "Cancel"
+            },
+            "blocks": [
+                {
                     "type": "input",
                     "element": {
-                        "type": "users_select",
+                        "type": "static_select",
                         "placeholder": {
                             "type": "plain_text",
-                            "text": "Select Slack account to register"
+                            "text": "Select name to register",
+                            "emoji": True
                         },
-                        "action_id": "slack-id-select"
+                        "options": brother_blocks,
+                        "action_id": "registration-block"
                     },
                     "label": {
                         "type": "plain_text",
-                        "text": "Which Slack account is tied to this name?"
+                        "text": "Who are you registering?",
                     }
-                }
-        ]
-    })
+                },
+                {
+                        "type": "input",
+                        "element": {
+                            "type": "users_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Select Slack account to register"
+                            },
+                            "action_id": "slack-id-select"
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Which Slack account is tied to this name?"
+                        }
+                    }
+            ]
+        })
 
 @slack_app.view("registration-view")
 def register_submitted(ack, body, client, view, say):
