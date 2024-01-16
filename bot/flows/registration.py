@@ -95,8 +95,6 @@ def register_submitted(ack, body, client, view, say):
     """
     ack()
 
-    print(view)
-
     name_block_id = view['blocks'][0]['block_id']
     slack_block_id = view['blocks'][1]['block_id']
     matched_name = view['state']['values'][name_block_id]['registration-block']['selected_option']['value']
@@ -108,17 +106,5 @@ def register_submitted(ack, body, client, view, say):
     con.commit()
     con.close()
 
-    say(channel=os.getenv("CHANNEL_ID"), text="Registered " + matched_name + " to the account <@{" + user_slack_id + "}")
+    say(channel=os.getenv("CHANNEL_ID"), text="Registered " + matched_name + " to the account " + user_slack_id)
     say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
-
-@slack_app.action("other-user-select")
-def register_other_user_select(ack):
-    """
-    Acknowledge, but do not take any action when clicking the register another user checkbox
-    """
-    ack()
-@slack_app.action("other-user-confirm")
-def register_other_user_confirm(ack, body, view, say):
-    ack()
-    print(view)
-    print(body)
