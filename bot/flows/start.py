@@ -83,7 +83,7 @@ def tomertron_start_command(ack, command, respond, context):
                         "type": "button",
                         "text": {
                             "type": "plain_text",
-                            "text": "Un-register an Account"
+                            "text": "Unregister an Account"
                         },
                         "action_id": "unregister"
                     }

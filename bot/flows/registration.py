@@ -108,7 +108,7 @@ def register_submitted(ack, body, client, view, say):
     con.commit()
     con.close()
 
-    say(channel=os.getenv("CHANNEL_ID"), text="Registered " + matched_name + " to the account " + user_slack_id)
+    say(channel=os.getenv("CHANNEL_ID"), text="Registered " + matched_name + " to the account <@{" + user_slack_id + "}")
     say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
 
 @slack_app.action("other-user-select")
