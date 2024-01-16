@@ -151,6 +151,26 @@ class SheetsData:
             if len(row) > 0:
                 brother_names.append(row[0])
         return brother_names
+    
+    def all_brothers_with_nicknames(self):
+        """
+        Gets all of the brothers currently with a job and gets their nicknames
+        """
+        brother_names = {}
+
+        self._load_jobs_and_points()
+        points = self.point_data.get("values", [])
+        nicknames = self.nickname_data.get("values", [])
+
+        for row in points[1:]:
+            if len(row) > 0:
+                brother_names[row[0]] = None
+                
+        for row in nicknames:
+            if row[0] in brother_names:
+                brother_names[row[0]] = row[1]
+
+        return dict(sorted(brother_names.items()))
 
     def available_signoffs(self, unsignoff=False):
         """
@@ -187,4 +207,25 @@ class SheetsData:
         self._save_jobs_and_points()
 
 
+    def get_available_jobs(self):
+        """
+        Gets all of the current, non signed off jobs
+        """
+        self._load_jobs_and_points()
+        jobs = self.job_data.get("values", [])
 
+        matching_jobs = []
+        for row in jobs:
+            if len(row) > 4 and (row[4] == self.signoff_not_done_name):
+                    matching_jobs.append(row)
+        return matching_jobs
+
+    def swap_job(self, swapped_name, job_id):
+        self._load_jobs_and_points()
+
+        # Update jobs
+        jobs = self.get_available_jobs()
+        job = jobs[int(job_id)]
+        job[3] = swapped_name
+
+        self._save_jobs_and_points()
