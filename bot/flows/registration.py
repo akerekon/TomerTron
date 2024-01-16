@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 from bot import slack_app, sheets_data
@@ -88,7 +89,7 @@ def register_flow(ack, body, client):
     })
 
 @slack_app.view("registration-view")
-def register_submitted(ack, body, client, view, say, respond):
+def register_submitted(ack, body, client, view, say):
     """
     Send the user a DM when they have successfully registered their account
     """
@@ -107,7 +108,7 @@ def register_submitted(ack, body, client, view, say, respond):
     con.commit()
     con.close()
 
-    respond("Registered " + matched_name + " to the account " + user_slack_id)
+    say(channel=os.getenv("CHANNEL_ID"), text="Registered " + matched_name + " to the account " + user_slack_id)
     say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")
 
 @slack_app.action("other-user-select")
