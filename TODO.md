@@ -4,9 +4,8 @@ Check for `TODO` comments, they are much more urgent than whats listed in this f
 
 ## General TODOs/ideas
 
-- [ ] Reassign
+
 - [ ] Reset Points
-- [ ] Register another person
 - [ ] DM people if their jobs are not done
 - [ ] Update documentation on the Google Sheet
 
