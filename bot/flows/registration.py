@@ -37,7 +37,7 @@ def register_flow(ack, body, client, respond):
             )
 
     if not brother_blocks:
-        respond("All accounts are registered!")
+        respond("All accounts are registered!", replace_original=False)
     else:
         # Open the view
         client.views_open(trigger_id=body["trigger_id"], view={

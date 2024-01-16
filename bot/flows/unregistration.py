@@ -30,7 +30,7 @@ def unregister_flow(ack, body, client, respond):
             )
         
     if not brother_blocks:
-        respond("There are no accounts registered!")
+        respond("There are no accounts registered!", replace_original=False)
     else:
         # Open the view
         client.views_open(trigger_id=body["trigger_id"], view={
