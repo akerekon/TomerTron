@@ -1,7 +1,7 @@
 # TomerTron
 A bot that manages the house jobs for [Alpha Chi Rho Delta Sigma Phi](https://axpdsp.org/).
 
-Made by Andrew Kerekon (1126), Brendan Leu, ...
+Made by Andrew Kerekon (1126), Brendan Leu, Matt Nickerson
 
 # Setup
 We recommend running the bot on Python `3.11.7`. A useful tool for managing python versions is [pyenv](https://github.com/pyenv/pyenv).
