@@ -4,7 +4,6 @@ app.py is the main module, used to receive incoming Slack requests
 
 import os
 import time
-import sqlite3
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
@@ -12,7 +11,8 @@ from flask import Flask, request
 from slack_bolt import App
 from slack_bolt.adapter.flask import SlackRequestHandler
 
-from bot.sheets_data import SheetsData
+from bot.utilities.database import Database
+from bot.utilities.sheets_data import SheetsData
 
 #Load in environment variables using dotenv, from a .env file
 #These secrets can be accessed by the current administrator of TomerTron via the Slack interface
@@ -32,11 +32,9 @@ handler = SlackRequestHandler(slack_app)
 sheets_data = SheetsData()
 
 #Reference a SQL database that maps Slack IDs to full names
-con = sqlite3.connect("find_name_from_slack_id.db")
-cur = con.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS slack_id(slack_id, name)")
-con.commit()
-con.close()
+db = Database()
+db.create_new_table()
+db.close()
 
 import bot.flows.start
 import bot.flows.signoff

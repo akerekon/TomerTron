@@ -1,6 +1,5 @@
-import sqlite3
-
 from bot import slack_app, sheets_data
+from bot.utilities.database import Database
 
 @slack_app.command("/register")
 def register_command(ack, client, body, command, respond, context):
@@ -11,22 +10,19 @@ def register_command(ack, client, body, command, respond, context):
 
     user_slack_id = context.user_id
 
-    # Connect to SQL Database
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-
     # Find user in database
-    registered_name = cur.execute("SELECT name, slack_id FROM slack_id sid WHERE sid.slack_id = \"" + user_slack_id+"\"").fetchone()
+    db = Database()
+    registered_name = db.get_name_from_slack_id(user_slack_id)
 
     # User registered already registered
     if registered_name is not None:
         respond("You are already registered as "+registered_name[0])
-        con.close()
+        db.close()
     # User not registered
     else:
         # Get the current slack connections
-        slack_connections = cur.execute("SELECT name FROM slack_id").fetchall()
-        con.close()
+        slack_connections = db.get_names()
+        db.close()
 
         # Make list of the names of brothers with a connected Slack
         brothers_with_slack = []
@@ -97,11 +93,9 @@ def register_submitted(ack, body, client, view, say, context, respond):
 
     user_slack_id = context.user_id
 
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-    cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
-    con.commit()
-    con.close()
+    db = Database()
+    db.set_connection(user_slack_id, matched_name)
+    db.close()
 
     # respond("You are now registered as "+matched_name+".")
     say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")

@@ -1,7 +1,7 @@
 import os
-import sqlite3
 
 from bot import slack_app, sheets_data
+from bot.utilities.database import Database
 
 @slack_app.action("register")
 def register_flow(ack, body, client, respond):
@@ -11,10 +11,9 @@ def register_flow(ack, body, client, respond):
     ack()
 
     # Get the current slack connections
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-    slack_connections = cur.execute("SELECT name FROM slack_id").fetchall()
-    con.close()
+    db = Database()
+    slack_connections = db.get_names()
+    db.close()
 
     # Make list of the names of brothers with a connected Slack
     brothers_with_slack = []
@@ -103,11 +102,9 @@ def register_submitted(ack, body, client, view, say):
     matched_name = view['state']['values'][name_block_id]['registration-block']['selected_option']['value']
     user_slack_id = view['state']['values'][slack_block_id]['slack-id-select']['selected_user']
 
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-    cur.execute("INSERT OR REPLACE INTO slack_id(slack_id, name) VALUES ('" + user_slack_id + "', '" + matched_name + "')")
-    con.commit()
-    con.close()
+    db = Database()
+    db.set_connection(user_slack_id, matched_name)
+    db.close()
 
     say(channel=os.getenv("CHANNEL_ID"), text="Registered " + matched_name + " to the account " + user_slack_id)
     say(channel=user_slack_id, text="Your Slack account is now tied to the name " + matched_name + ". If you are an Assistant House Manager, you can now sign off jobs. You will also receive reminders to complete your house jobs.")

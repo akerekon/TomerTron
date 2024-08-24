@@ -1,5 +1,4 @@
 import os
-import sqlite3
 from bot import slack_app, sheets_data
 
 @slack_app.action("reassign")

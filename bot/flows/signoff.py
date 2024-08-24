@@ -1,7 +1,7 @@
-import sqlite3
 import os
 
 from bot import slack_app, sheets_data, config
+from bot.utilities.database import Database
 
 @slack_app.action("signoff")
 def signoff_flow(ack, body, client, respond):
@@ -196,17 +196,15 @@ def signoff_confirm(ack, body, client, view, say):
             is_late = True
 
     # Send message
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-    res = cur.execute("SELECT name FROM slack_id WHERE slack_id='" + signedoffby_id + "'")
-    matched_name = res.fetchone()
+    db = Database()
+    matched_name = db.get_name_from_slack_id()
     if matched_name is None:
         say(channel=os.getenv("CHANNEL_ID"), text="<@"+ signedoffby_id +">, please first register your account!")
     else:
         # Sign off the person
         sheets_data.signoff_job(signedoff_name, matched_name[0], job_id, is_late)
         say(channel=os.getenv("CHANNEL_ID"), text="<@"+ signedoffby_id +"> signed off " + signedoff_name + " for " + job['text']['text'])
-    con.close()
+    db.close()
 
 @slack_app.action("signoff-job-option")
 def signoff_job_option(ack):

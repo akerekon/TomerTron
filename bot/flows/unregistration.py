@@ -1,7 +1,7 @@
-import sqlite3
 import os
 
 from bot import slack_app, sheets_data
+from bot.utilities.database import Database
 
 @slack_app.action("unregister")
 def unregister_flow(ack, body, client, respond):
@@ -11,10 +11,9 @@ def unregister_flow(ack, body, client, respond):
     ack()
 
     # Get the current slack connections
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-    slack_connections = cur.execute("SELECT name FROM slack_id").fetchall()
-    con.close()
+    db = Database()
+    slack_connections = db.get_names()
+    db.close()
 
     # Make list of the names of brothers with a connected Slack
     brother_blocks = []
@@ -78,12 +77,10 @@ def unregister_submitted(ack, view, say):
     name_block_id = view['blocks'][0]['block_id']
     matched_name = view['state']['values'][name_block_id]['unregistration-block']['selected_option']['value']
 
-    con = sqlite3.connect("find_name_from_slack_id.db")
-    cur = con.cursor()
-    user_slack_id = cur.execute("SELECT slack_id FROM slack_id WHERE name LIKE '%" + matched_name + "%'").fetchone()
-    cur.execute("DELETE FROM slack_id WHERE name LIKE '%" + matched_name + "%'")
-    con.commit()
-    con.close()
+    db = Database()
+    user_slack_id = db.get_slack_id_from_name(matched_name)
+    db.delete_connection(user_slack_id)
+    db.close()
 
     say(channel=user_slack_id[0], text="Your Slack account is no longer tied to " + matched_name + "! If you feel this is in error, contact the House Manager.")
     say(channel=os.getenv("CHANNEL_ID"), text="Successfully unregistered " + matched_name)
