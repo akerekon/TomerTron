@@ -28,7 +28,7 @@ class Database:
         return self.execute("SELECT name FROM slack_id").fetchall()
 
     def get_slack_id_from_name(self, name):
-        return self.execute("SELECT slack_id FROM slack_id WHERE name LIKE '%" + name + "%'").fetchone()
+        return self.execute("SELECT slack_id FROM slack_id WHERE name LIKE '%" + name + "%'").fetchone()[0]
 
     def get_name_from_slack_id(self, slack_id):
-        return self.execute("SELECT name, slack_id FROM slack_id sid WHERE sid.slack_id = \"" + slack_id + "\"").fetchone()
+        return self.execute("SELECT name, slack_id FROM slack_id sid WHERE sid.slack_id = \"" + slack_id + "\"").fetchone()[0]

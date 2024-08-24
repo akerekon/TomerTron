@@ -82,5 +82,5 @@ def unregister_submitted(ack, view, say):
     db.delete_connection(user_slack_id)
     db.close()
 
-    say(channel=user_slack_id[0], text="Your Slack account is no longer tied to " + matched_name + "! If you feel this is in error, contact the House Manager.")
+    say(channel=user_slack_id, text="Your Slack account is no longer tied to " + matched_name + "! If you feel this is in error, contact the House Manager.")
     say(channel=os.getenv("CHANNEL_ID"), text="Successfully unregistered " + matched_name)

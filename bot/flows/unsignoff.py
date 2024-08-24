@@ -175,7 +175,7 @@ def unsignoff_confirm(ack, body, client, view, say):
     if matched_name is None:
         say(channel=os.getenv("CHANNEL_ID"), text="<@"+ unsignedoffby_id +">, please first register your account!")
     else:
-        sheets_data.unsignoff_job(unsignedoff_name, matched_name[0], job_id)
+        sheets_data.unsignoff_job(unsignedoff_name, matched_name, job_id)
         say(channel=os.getenv("CHANNEL_ID"), text="<@"+ unsignedoffby_id +"> un-signed off " + unsignedoff_name + " for " + job['text']['text'])
     db.close()
 
